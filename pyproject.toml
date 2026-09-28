@@ -1,0 +1,16 @@
+[project]
+name = "multilingual-icm"
+version = "1.0.0"
+description = "Label-free maths labels by cross-lingual agreement (the ICM method and its experimental record)."
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+# The generation side (vLLM etc.) has its own environment: see generation/pyproject.toml.
+# The uPRM and probe repositories import this package:  pip install -e /path/to/ICM_work_
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["icm*"]
