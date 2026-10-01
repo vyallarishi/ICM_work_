@@ -44,6 +44,9 @@ def raw_stats(path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--root", required=True)
+    ap.add_argument("--jury-root", action="append", default=[],
+                    help="other generation runs on the SAME problems whose languages join the "
+                         "vote (reported languages stay those of --root)")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
 
@@ -51,6 +54,11 @@ def main():
     for lang in langs:                      # let load_pools accept every language present
         data.TIER.setdefault(lang, "new")
     pools = data.load(a.root)
+    for jr in a.jury_root:
+        extra = data.load(jr)
+        shared = {i.rsplit("_", 1)[-1] for i in pools} & {i.rsplit("_", 1)[-1] for i in extra}
+        pools.update({i: p for i, p in extra.items() if i.rsplit("_", 1)[-1] in shared})
+    print(f"jury: {len({p['lang'] for p in pools.values()})} languages, {len(pools)} pools")
     state, contested, _ = vote.converge(pools)
 
     rows = {}
