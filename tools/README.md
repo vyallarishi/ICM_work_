@@ -12,3 +12,8 @@ Python; `run_selftests.py` also needs numpy.
 
 The first three need `~/phase0` and `~/multilingual_icm` to exist. The method
 itself is tested by `tests/`, not here.
+
+`pilot_report.py --root <generation run>` prints per-language health of a
+generation run (parse and truncation rates, chain accuracy, coverage and
+precision after voting), including languages the tier table does not know
+yet. Use it on a pilot before scaling up.
