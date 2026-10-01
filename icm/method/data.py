@@ -17,6 +17,8 @@ from collections import Counter, defaultdict
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
+from .rules import RECORD
+
 # The 37 languages, grouped by how much training data the model has seen.
 TIER = {
     "en": "high", "cs": "high", "af": "high", "de": "high", "vi": "high",
@@ -30,6 +32,16 @@ TIER = {
     "is": "low", "ky": "low", "ceb": "low",
 }
 TIERS = ("high", "mid", "low")
+
+# Languages added for the 50-language run (pilot 2026-10-01). Tiers proposed, by
+# pretraining volume. Kept apart from TIER so every recorded number still means
+# "the 37 languages"; pass `languages=LANGUAGES_50` to load_pools to include them.
+TIER_NEW = {
+    "ja": "high", "zh-cn": "high", "sv": "high",
+    "hu": "mid", "he": "mid", "ta": "mid", "te": "mid", "gu": "mid", "ne": "mid", "ka": "mid",
+    "my": "low", "yo": "low", "ha": "low",
+}
+LANGUAGES_50 = {**TIER, **TIER_NEW}
 
 LANDSLIDE = 0.70       # a pool commits on its own when >= 70% of its chains agree
 WORLD_STRENGTH = 0.70  # the other languages "strongly agree" when >= 70% share one answer
@@ -52,27 +64,32 @@ def norm(x):
     return f"{d:f}"
 
 
-def match(a, b):
-    """Two normalised answers count as equal if they are within 0.5% of each other."""
+def match(a, b, rules=RECORD):
+    """Two normalised answers count as equal if they are within 0.5% of each other
+    (RECORD), or only if numerically equal (rules.exact_match)."""
     if a is None or b is None:
         return False
     x, y = Decimal(a), Decimal(b)
     if x == y:
         return True
+    if rules.exact_match:
+        return False
     s = max(abs(x), abs(y))
     return s > 0 and abs(x - y) / s <= Decimal("0.005")
 
 
-def load_pools(root):
-    """Read <root>/final/pooled/generated/<lang>.jsonl for every language in TIER.
+def load_pools(root, languages=None):
+    """Read <root>/final/pooled/generated/<lang>.jsonl for every language in
+    `languages` (default: TIER, the record's 37).
 
     Drops chains with no parseable answer and chains cut off by the token limit
     (finish_reason == "length"). Drops pools with no usable chain or no gold.
     """
+    languages = TIER if languages is None else languages
     pools = {}
     for path in sorted(glob.glob(f"{root}/final/pooled/generated/*.jsonl")):
         lang = Path(path).stem
-        if lang not in TIER:
+        if lang not in languages:
             continue
         with open(path, encoding="utf-8") as handle:
             for line in handle:
@@ -141,6 +158,41 @@ def apply_diverse_views(pools):
     return pools
 
 
-def load(root):
-    """The pools exactly as the headline run saw them."""
-    return apply_diverse_views(load_pools(root))
+def diverse8_view_fixed(chains, k=8):
+    """Up to k chains, answer-diverse, deterministic and order-invariant.
+    Copied from experiments/q07_audits/fix_pool_view_share.py."""
+    if len(chains) <= k:
+        return list(chains)
+    groups = defaultdict(list)
+    for chain in chains:
+        groups[chain["answer"]].append(chain)
+    # canonical order: biggest answer-group first, ties broken by answer text
+    ordered = sorted(groups.items(), key=lambda kv: (-len(kv[1]), kv[0]))
+    def canonical(group):
+        return sorted(group, key=lambda c: (len(c["text"]), c["text"]))
+    selected = [canonical(group)[0] for _, group in ordered[:k]]
+    if len(selected) < k:
+        chosen = {id(c) for c in selected}
+        remainder = [c for _, group in ordered for c in canonical(group)
+                     if id(c) not in chosen]
+        selected.extend(remainder[:k - len(selected)])
+    return selected[:k]
+
+
+def apply_diverse_views_fixed(pools, k=8):
+    """Attach the view WITHOUT touching the pool's true vote statistics.
+    Copied from experiments/q07_audits/fix_pool_view_share.py."""
+    for pool in pools.values():
+        full = pool["chains"]
+        counts = Counter(c["answer"] for c in full)
+        pool["plurality"] = max(counts, key=lambda a: (counts[a], a))
+        pool["share"] = counts[pool["plurality"]] / len(full)
+        pool["full_size"] = len(full)
+        pool["chains"] = diverse8_view_fixed(full, k)
+    return pools
+
+
+def load(root, rules=RECORD, languages=None):
+    """The pools as the headline run saw them (RECORD), or with the fixed view."""
+    pools = load_pools(root, languages)
+    return apply_diverse_views_fixed(pools) if rules.fixed_view else apply_diverse_views(pools)

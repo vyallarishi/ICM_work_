@@ -1,16 +1,17 @@
 """Coverage and precision. This is the only file in the method that reads gold."""
 from .data import match
+from .rules import RECORD
 
 
-def metrics(pools, state, contested_ids):
+def metrics(pools, state, contested_ids, rules=RECORD):
     """coverage  = pools with an answer / all pools
     precision = pools whose answer matches gold / pools with an answer
     contested_accuracy = the same, over the contested pools that got an answer
     """
     answered = [i for i in contested_ids if state[i]["answer"] is not None]
-    hits = sum(match(state[i]["answer"], pools[i]["gold"]) for i in answered)
+    hits = sum(match(state[i]["answer"], pools[i]["gold"], rules) for i in answered)
     total_committed = sum(1 for s in state.values() if s["answer"] is not None)
-    total_hits = sum(match(s["answer"], pools[i]["gold"])
+    total_hits = sum(match(s["answer"], pools[i]["gold"], rules)
                      for i, s in state.items() if s["answer"] is not None)
     n = len(state)
     return {

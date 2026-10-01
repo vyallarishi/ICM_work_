@@ -31,8 +31,13 @@ def walk(a, b, path):
             diffs.append(f"{path}: length {len(a)} vs {len(b)}")
         for i, (x, y) in enumerate(zip(a, b)):
             walk(x, y, f"{path}[{i}]")
-    elif isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool):
-        if abs(a - b) > args.tol:
+    elif isinstance(a, bool) or isinstance(b, bool):
+        if type(a) is not type(b) or a != b:
+            diffs.append(f"{path}: {a!r} vs {b!r}")
+    elif isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        if (a != a) or (b != b):                       # NaN never equals anything, itself included
+            diffs.append(f"{path}: {a!r} vs {b!r} (NaN)")
+        elif abs(a - b) > args.tol:
             diffs.append(f"{path}: {a!r} vs {b!r}")
     elif a != b:
         diffs.append(f"{path}: {a!r} vs {b!r}")

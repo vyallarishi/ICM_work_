@@ -19,6 +19,7 @@ from pathlib import Path
 
 from icm.method import data, vote
 from icm.method.metrics import metrics
+from icm.method.rules import BY_NAME
 
 
 def raw_stats(path):
@@ -47,19 +48,20 @@ def main():
     ap.add_argument("--jury-root", action="append", default=[],
                     help="other generation runs on the SAME problems whose languages join the "
                          "vote (reported languages stay those of --root)")
+    ap.add_argument("--rules", choices=sorted(BY_NAME), default="record")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
+    rules = BY_NAME[a.rules]
 
     langs = sorted(Path(p).stem for p in glob.glob(f"{a.root}/final/pooled/generated/*.jsonl"))
-    for lang in langs:                      # let load_pools accept every language present
-        data.TIER.setdefault(lang, "new")
-    pools = data.load(a.root)
+    languages = {**data.LANGUAGES_50, **{l: "new" for l in langs}}   # accept every language present
+    pools = data.load(a.root, rules, languages)
     for jr in a.jury_root:
-        extra = data.load(jr)
+        extra = data.load(jr, rules, languages)
         shared = {i.rsplit("_", 1)[-1] for i in pools} & {i.rsplit("_", 1)[-1] for i in extra}
         pools.update({i: p for i, p in extra.items() if i.rsplit("_", 1)[-1] in shared})
     print(f"jury: {len({p['lang'] for p in pools.values()})} languages, {len(pools)} pools")
-    state, contested, _ = vote.converge(pools)
+    state, contested, _ = vote.converge(pools, rules=rules)
 
     rows = {}
     for lang in langs:
@@ -67,7 +69,7 @@ def main():
         mine = {i: p for i, p in pools.items() if p["lang"] == lang}
         if mine:
             sub_state = {i: state[i] for i in mine}
-            m = metrics(mine, sub_state, [i for i in contested if i in mine])
+            m = metrics(mine, sub_state, [i for i in contested if i in mine], rules)
             r.update({"pools": len(mine),
                       "landslide_pct": 100 * sum(p["share"] >= data.LANDSLIDE for p in mine.values()) / len(mine),
                       "coverage_pct": 100 * m["coverage"], "precision_pct": 100 * m["precision"],

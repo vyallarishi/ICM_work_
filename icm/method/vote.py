@@ -17,6 +17,7 @@ abstains (answer None). Gold is never read here.
 from collections import Counter, defaultdict
 
 from .data import LANDSLIDE, WORLD_STRENGTH, match
+from .rules import RECORD
 
 ITERATIONS = 4
 
@@ -25,7 +26,7 @@ def problem_of(iid):
     return iid.rsplit("_", 1)[-1]
 
 
-def initialize(pools):
+def initialize(pools, rules=RECORD):
     """One pass over every pool: committed / vetoed / contested."""
     state = {}
     plur = {iid: p["plurality"] for iid, p in pools.items()}
@@ -38,7 +39,7 @@ def initialize(pools):
         top = Counter(others).most_common(1) if others else []
         strong = top and top[0][1] / len(others) >= WORLD_STRENGTH
         if p["share"] >= LANDSLIDE:
-            if strong and not match(top[0][0], plur[iid]):
+            if strong and not match(top[0][0], plur[iid], rules):
                 state[iid] = {"answer": None, "kind": "contested"}  # vetoed
             else:
                 state[iid] = {"answer": plur[iid], "kind": "committed"}
@@ -72,7 +73,15 @@ class World:
         return out
 
 
-def update_pool(pool, others):
+def in_pool(answer, counts, rules=RECORD):
+    """Did this language produce `answer`? String equality in the record;
+    match() under rules.veto_by_match."""
+    if rules.veto_by_match:
+        return any(match(answer, a, rules) for a in counts)
+    return answer in counts
+
+
+def update_pool(pool, others, rules=RECORD):
     """One contested pool's re-decision. Returns the new answer, or None to abstain.
 
     The experiments also tried adding a model-judge bonus to `score` (see
@@ -84,29 +93,29 @@ def update_pool(pool, others):
         return None
     if others:
         top_world, top_n = Counter(others).most_common(1)[0]
-        if top_n / len(others) >= WORLD_STRENGTH and top_world not in counts:
+        if top_n / len(others) >= WORLD_STRENGTH and not in_pool(top_world, counts, rules):
             return None  # veto: strong world answer this language never produced
     def score(a):
-        ws = (sum(match(o, a) for o in others) / len(others)) if others else 0.0
+        ws = (sum(match(o, a, rules) for o in others) / len(others)) if others else 0.0
         return ws + 0.001 * counts[a]
     return max(counts, key=lambda a: (score(a), a))
 
 
-def converge(pools, world=None):
+def converge(pools, world=None, rules=RECORD):
     """initialize, then 4 rounds of update_pool over the contested pools.
 
     Returns (state, contested_ids, oscillators). Oscillators are contested pools
     whose answer changed 2+ times; regeneration treats them more strictly.
     """
     world = world or World(pools)
-    state = initialize(pools)
+    state = initialize(pools, rules)
     contested = [i for i, s in state.items() if s["kind"] == "contested"]
     history = {i: [state[i]["answer"]] for i in contested}
     for _ in range(ITERATIONS):
         new_state = {i: dict(s) for i, s in state.items()}
         for iid in contested:
             new_state[iid]["answer"] = update_pool(
-                pools[iid], world.context(state, iid))
+                pools[iid], world.context(state, iid), rules)
         state = new_state
         for iid in contested:
             history[iid].append(state[iid]["answer"])

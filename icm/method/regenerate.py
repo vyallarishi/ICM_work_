@@ -20,6 +20,8 @@ import re
 from collections import Counter, defaultdict
 
 from .data import LANDSLIDE, WORLD_STRENGTH, match, norm
+from .rules import RECORD
+from .vote import in_pool
 
 M_SAMPLES = 4          # new chains per stuck pool
 ALPHA = 0.5            # weight of each new chain relative to an original chain
@@ -34,11 +36,16 @@ ANSWER_RE = re.compile(r"####\s*([^\n]+)")
 NUMBER_RE = re.compile(r"-?\d[\d,]*(?:\.\d+)?")
 
 
-def extract_answer(continuation):
-    """'#### N' if present, else the last number in the continuation."""
+def extract_answer(continuation, rules=RECORD):
+    """'#### N' if present, else the last number in the continuation.
+    Under rules.units_fallback, '#### 42 dollars' / '#### $42' give 42 instead of None."""
     m = ANSWER_RE.search(continuation)
     if m:
-        return norm(m.group(1).strip().rstrip("."))
+        answer = norm(m.group(1).strip().rstrip("."))
+        if answer is None and rules.units_fallback:
+            numbers = NUMBER_RE.findall(m.group(1))
+            answer = norm(numbers[-1]) if numbers else None
+        return answer
     numbers = NUMBER_RE.findall(continuation)
     return norm(numbers[-1]) if numbers else None
 
@@ -84,17 +91,17 @@ def answer_clusters(pools, state, problem, target_lang):
     return majority, minority, by_answer
 
 
-def pick_peer_chain(pools, problem, lang, answer):
+def pick_peer_chain(pools, problem, lang, answer, rules=RECORD):
     """A chain from lang's pool supporting `answer`, shortest under cap."""
     pool = pools.get(f"train_{lang}_{problem}")
     if pool is None:
         return None
     cands = [c for c in pool["chains"]
-             if match(c["answer"], answer) and len(c["text"]) <= PEER_MAX_CHARS]
+             if match(c["answer"], answer, rules) and len(c["text"]) <= PEER_MAX_CHARS]
     return min(cands, key=lambda c: len(c["text"]))["text"] if cands else None
 
 
-def select_regen_peers(pools, state, iid, rng):
+def select_regen_peers(pools, state, iid, rng, rules=RECORD):
     """2 majority-cluster peers + 1 minority-cluster peer (arbitration)."""
     problem = iid.rsplit("_", 1)[-1]
     lang = pools[iid]["lang"]
@@ -105,7 +112,7 @@ def select_regen_peers(pools, state, iid, rng):
     maj_langs = list(by_answer[majority])
     rng.shuffle(maj_langs)
     for peer_lang in maj_langs:
-        text = pick_peer_chain(pools, problem, peer_lang, majority)
+        text = pick_peer_chain(pools, problem, peer_lang, majority, rules)
         if text:
             peers.append(text)
         if len(peers) == 2:
@@ -114,7 +121,7 @@ def select_regen_peers(pools, state, iid, rng):
         min_langs = list(by_answer[minority])
         rng.shuffle(min_langs)
         for peer_lang in min_langs:
-            text = pick_peer_chain(pools, problem, peer_lang, minority)
+            text = pick_peer_chain(pools, problem, peer_lang, minority, rules)
             if text:
                 peers.append(text)
                 break
@@ -136,13 +143,13 @@ def build_regen_prompt(question, peers, demos):
     return "\n\n".join(blocks)
 
 
-def build_jobs(pools, state, contested):
+def build_jobs(pools, state, contested, rules=RECORD):
     """(iid, prompt) for every contested pool that has peers to learn from."""
     demos = format_demos(pools)
     rng = random.Random(SEED + 25)
     jobs = []
     for iid in contested:
-        peers = select_regen_peers(pools, state, iid, rng)
+        peers = select_regen_peers(pools, state, iid, rng, rules)
         if not peers:
             continue
         jobs.append((iid, build_regen_prompt(pools[iid]["question"], peers,
@@ -150,7 +157,7 @@ def build_jobs(pools, state, contested):
     return jobs
 
 
-def generate(jobs, model_dir, out_path):
+def generate(jobs, model_dir, out_path, rules=RECORD):
     """GPU: sample M_SAMPLES chains per prompt with vLLM; write the answers cache."""
     from vllm import LLM, SamplingParams
     llm = LLM(model=model_dir, dtype="bfloat16",
@@ -162,7 +169,7 @@ def generate(jobs, model_dir, out_path):
     outputs = llm.generate([p for _, p in jobs], params)
     with open(out_path, "w", encoding="utf-8") as handle:
         for (iid, _), out in zip(jobs, outputs):
-            answers = [extract_answer(o.text) for o in out.outputs]
+            answers = [extract_answer(o.text, rules) for o in out.outputs]
             handle.write(json.dumps(
                 {"iid": iid, "answers": [a for a in answers if a is not None]},
                 ensure_ascii=False) + "\n")
@@ -178,7 +185,7 @@ def load_regen(path):
     return regen
 
 
-def weighted_decide(pool, others, regen_answers, alpha, unanimity_required):
+def weighted_decide(pool, others, regen_answers, alpha, unanimity_required, rules=RECORD):
     """`vote.update_pool` over the pool plus its new chains at weight alpha."""
     counts = Counter()
     for c in pool["chains"]:
@@ -197,9 +204,9 @@ def weighted_decide(pool, others, regen_answers, alpha, unanimity_required):
             return None
     if others:
         top_world, top_n = Counter(others).most_common(1)[0]
-        if top_n / len(others) >= WORLD_STRENGTH and top_world not in counts:
+        if top_n / len(others) >= WORLD_STRENGTH and not in_pool(top_world, counts, rules):
             return None
     def score(a):
-        ws = (sum(match(o, a) for o in others) / len(others)) if others else 0.0
+        ws = (sum(match(o, a, rules) for o in others) / len(others)) if others else 0.0
         return ws + 0.001 * counts[a]
     return max(counts, key=lambda a: (score(a), a))
