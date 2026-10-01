@@ -4,7 +4,7 @@
 # replacements. The context matters: the generator skips any prompt longer than
 # max_model_len - max_new_tokens, and a 2-shot Burmese prompt is ~3,000 tokens.
 # Burmese lost 32% of its chains to the 768-token limit, Telugu 16%, Gujarati 13%.
-# Override the list at submit time:  LANGUAGES="my te gu so ig" sbatch cluster/pilot_v2_token_budget.sbatch
+# Override the list at submit time:  LANGUAGES="my te gu ta" sbatch cluster/pilot_v2_token_budget.sbatch
 # Submit from this repo's generation/ directory. Afterwards (CPU, seconds):
 #   PYTHONPATH=.. python ../tools/pilot_report.py --root $SCRATCH/multilingual-icm/results/qwen3-14b-pilot-v3 \
 #       --jury-root $SCRATCH/multilingual-icm/results/qwen3-14b-full37
@@ -21,6 +21,6 @@ export EXPERIMENT_NAME="${EXPERIMENT_NAME:-qwen3-14b-pilot-v3}"
 export MODEL_DIR="${SCRATCH}/multilingual-icm/assets/models/Qwen3-14B-Base"
 export MANIFEST="${SLURM_SUBMIT_DIR}/configs/best_regimes_v3_1536tok.json"
 export LIMIT_PER_LANGUAGE=150
-# default: the three token-limited languages + four replacement candidates for Hausa / Yoruba
-export LANGUAGES="${LANGUAGES:-my te gu ta so ig pa si}"
+# default: the token-limited languages + Punjabi, Sinhala, Mongolian, Uzbek as replacement candidates
+export LANGUAGES="${LANGUAGES:-my te gu ta pa si mn uz}"
 source "${SLURM_SUBMIT_DIR}/cluster/rorqual_generate.sbatch"

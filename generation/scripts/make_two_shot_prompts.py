@@ -13,6 +13,7 @@ Usage:  python scripts/make_two_shot_prompts.py
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 PROMPTS_DIR = Path(__file__).with_name("prompts")
@@ -103,9 +104,26 @@ REPLACEMENTS: dict[str, tuple[str, str]] = {
 }
 
 
+SENTENCE_END = re.compile(r"^(.*?[.。।။!?])\s*(\S.*)$", re.S)
+
+
+def drop_count_sentence(prompt: str) -> str:
+    """For languages without a hand-written replacement: remove the whole
+    "Study the six solved examples below." sentence (the first sentence of the
+    second paragraph) and keep "Then solve the final question as follows:" and
+    the numbered instructions. Raises rather than guessing if the paragraph
+    does not have that shape."""
+    paras = prompt.split("\n\n")
+    match = SENTENCE_END.match(paras[1])
+    if match is None or not match.group(2).strip():
+        raise SystemExit(f"cannot find the count sentence in: {paras[1][:80]!r}")
+    paras[1] = match.group(2)
+    return "\n\n".join(paras)
+
+
 def main() -> None:
     fixed: list[str] = []
-    unchanged: list[str] = []
+    dropped: list[str] = []
     out_rows: list[dict] = []
     for line in SOURCE.read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -123,7 +141,8 @@ def main() -> None:
             row["prompt"] = row["prompt"].replace(old, new)
             fixed.append(code)
         else:
-            unchanged.append(code)
+            row["prompt"] = drop_count_sentence(row["prompt"])
+            dropped.append(code)
         row["prompt_name"] = "few_shot_cot_2shot"
         out_rows.append(row)
 
@@ -133,10 +152,7 @@ def main() -> None:
 
     print(f"wrote {TARGET} ({len(out_rows)} languages)")
     print(f"count wording fixed ({len(fixed)}): {' '.join(sorted(fixed))}")
-    print(
-        f"NOT fixed, copied verbatim ({len(unchanged)}): still say 'six' — "
-        "extend REPLACEMENTS before using these languages in 2-shot runs."
-    )
+    print(f"count sentence dropped ({len(dropped)}): {' '.join(sorted(dropped))}")
 
 
 if __name__ == "__main__":

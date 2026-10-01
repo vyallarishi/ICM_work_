@@ -96,21 +96,10 @@ print(f"experiment modules checked: {len(prov)}")
 for k, v in sorted(counts.items()):
     print(f"  {v:4d} x {k}")
 
-# generation side: tracked files of ~/multilingual_icm HEAD, plus uv.lock
-tracked = subprocess.run(["git", "-C", GEN_REPO, "ls-files"], capture_output=True, text=True,
-                         check=True).stdout.split()
-gen_files = [f for f in tracked if not f.startswith(("organized_rishi/", "probe_core/"))]
+# generation/ was verified byte-identical to git HEAD of ~/multilingual_icm when it was
+# moved here (commit 5d26753). Since then it is developed in this repository (prompt
+# templates, configs, jobs), so it is no longer compared to the old repo.
 gen_bad = 0
-for f in gen_files:
-    head = subprocess.run(["git", "-C", GEN_REPO, "show", f"HEAD:{f}"], capture_output=True,
-                          check=True).stdout
-    if (ROOT / "generation" / f).read_bytes() != head:
-        gen_bad += 1
-        print(f"  GENERATION DIFF: {f}")
-if (ROOT / "generation" / "uv.lock").read_bytes() != (GEN_REPO / "uv.lock").read_bytes():
-    gen_bad += 1
-    print("  GENERATION DIFF: uv.lock")
-print(f"generation files checked: {len(gen_files) + 1}, differing: {gen_bad}")
 
 if fails:
     print(f"\nFAIL: {len(fails)} unexplained line changes")

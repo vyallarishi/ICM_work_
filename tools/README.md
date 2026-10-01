@@ -5,7 +5,7 @@ Python; `run_selftests.py` also needs numpy.
 
 | command | proves |
 |---|---|
-| `python tools/check_provenance.py` | every file in `icm/experiments` equals its `~/phase0` original apart from import lines and output paths; `generation/` is byte-identical to git HEAD of `~/multilingual_icm` |
+| `python tools/check_provenance.py` | every file in `icm/experiments` equals its `~/phase0` original apart from import lines and output paths (`generation/` was checked once at the move and evolves here since) |
 | `python tools/check_imports.py` | every relative import resolves and every imported name exists; nothing still imports a `stageNN` name |
 | `python tools/run_selftests.py --baseline` | every experiment's `--self-test` passes and prints exactly what the original prints |
 | `python tools/compare_results.py A.json B.json` | two result files are identical (use after a re-run) |
