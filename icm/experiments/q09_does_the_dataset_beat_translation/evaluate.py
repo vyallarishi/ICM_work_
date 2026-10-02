@@ -20,35 +20,57 @@ MODEL_DIR = "/scratch/rvyalla/multilingual-icm/assets/models/Qwen3-14B-Base"
 GEN_SCRIPTS = Path(__file__).resolve().parents[3] / "generation" / "scripts"
 
 
-def paired_comparisons(results, rows, reference="translated", n_boot=10000, seed=0):
-    """Accuracy difference of every arm vs the reference arm on the SAME prompts,
-    with a paired bootstrap over prompts (95% CI), overall and per tier.
-    PRE-REGISTERED H4: method_fusion - translated >= +1.0 point overall with the
-    CI lower bound > 0, and method_lenmatch - translated CI lower bound > 0."""
+def paired_comparisons(results, rows, n_boot=10000, seed=0):
+    """Arm-vs-arm accuracy differences on the SAME prompts, paired bootstrap 95% CI.
+
+    Adapters named <arm>_s<k> are seeds of one arm; an arm's per-prompt score is
+    the mean over its seeds. The seed-to-seed difference of an arm is reported as
+    the training-noise yardstick.
+    PRE-REGISTERED H4 (overall):
+      H4a  method - translated          >= +1.0 point, CI lower bound > 0
+      H4b  method - own_unlabelled      CI lower bound > 0   (the labelling matters)
+      H4c  method_lenmatch - translated CI lower bound > 0   (not just more tokens)
+    """
+    import re
     import numpy as np
-    if reference not in results["arms"]:
-        return {}
     rng = np.random.default_rng(seed)
     tiers = np.array([r["tier"] for r in rows])
-    ref = np.array(results["arms"][reference]["correct"], dtype=float)
-    out = {}
-    print(f"\npaired difference vs {reference} (points, 95% bootstrap CI over the same prompts):")
+    seeds = {}
     for name, arm in results["arms"].items():
-        if name == reference:
+        if name == "base":
             continue
-        d = np.array(arm["correct"], dtype=float) - ref
-        out[name] = {}
+        seeds.setdefault(re.sub(r"_s\d+$", "", name), []).append(np.array(arm["correct"], dtype=float))
+    arms = {k: np.mean(v, axis=0) for k, v in seeds.items()}
+
+    def ci(d):
+        out = {}
         for sl in ("ALL", "high", "mid", "low"):
             m = np.ones(len(d), bool) if sl == "ALL" else tiers == sl
             dd = d[m]
             boot = dd[rng.integers(0, len(dd), size=(n_boot, len(dd)))].mean(axis=1)
             lo, hi = np.percentile(boot, [2.5, 97.5])
-            out[name][sl] = [round(100 * float(dd.mean()), 2), round(100 * float(lo), 2), round(100 * float(hi), 2)]
-        print(f"  {name:<16}" + "  ".join(f"{sl} {v[0]:+.2f} [{v[1]:+.2f}, {v[2]:+.2f}]" for sl, v in out[name].items()))
-    if "method_fusion" in out and "method_lenmatch" in out:
-        f, l = out["method_fusion"]["ALL"], out["method_lenmatch"]["ALL"]
-        out["H4_holds"] = f[0] >= 1.0 and f[1] > 0 and l[1] > 0
-        print(f"H4 (fusion >= +1.0 with CI > 0, lenmatch CI > 0): {'HOLDS' if out['H4_holds'] else 'FAILS'}")
+            out[sl] = [round(100 * float(dd.mean()), 2), round(100 * float(lo), 2), round(100 * float(hi), 2)]
+        return out
+
+    out = {"seed_noise": {}, "comparisons": {}}
+    print("\nseed-to-seed difference (training noise), points [95% CI]:")
+    for k, v in seeds.items():
+        if len(v) >= 2:
+            out["seed_noise"][k] = ci(v[0] - v[1])
+            print(f"  {k:<16}" + "  ".join(f"{sl} {x[0]:+.2f} [{x[1]:+.2f}, {x[2]:+.2f}]" for sl, x in out["seed_noise"][k].items()))
+    print("\narm differences (seed-averaged), points [95% CI]:")
+    for a, b in (("method", "translated"), ("method", "own_unlabelled"), ("method_lenmatch", "translated"),
+                 ("own_unlabelled", "translated"), ("method", "method_lenmatch")):
+        if a in arms and b in arms:
+            key = f"{a} - {b}"
+            out["comparisons"][key] = ci(arms[a] - arms[b])
+            print(f"  {key:<30}" + "  ".join(f"{sl} {x[0]:+.2f} [{x[1]:+.2f}, {x[2]:+.2f}]"
+                                            for sl, x in out["comparisons"][key].items()))
+    c = out["comparisons"]
+    if {"method - translated", "method - own_unlabelled", "method_lenmatch - translated"} <= set(c):
+        a, b, l = c["method - translated"]["ALL"], c["method - own_unlabelled"]["ALL"], c["method_lenmatch - translated"]["ALL"]
+        out["H4"] = {"H4a": a[0] >= 1.0 and a[1] > 0, "H4b": b[1] > 0, "H4c": l[1] > 0}
+        print("H4: " + "  ".join(f"{k} {'HOLDS' if v else 'FAILS'}" for k, v in out["H4"].items()))
     return out
 
 

@@ -3,6 +3,7 @@
 Scoring is ALWAYS exact numeric equality with gold, whatever rules produced the
 labels, so different rule sets are compared on the same yardstick.
 """
+import hashlib
 import json
 from collections import Counter, defaultdict
 from decimal import Decimal
@@ -74,3 +75,26 @@ def by_problem(pools):
 def plurality(chains):
     c = Counter(ch["answer"] for ch in chains)
     return max(c, key=lambda a: (c[a], a)), c
+
+
+N_CALIBRATION = 300
+
+
+def calibration_problems(n_problems=1500, n=N_CALIBRATION):
+    """The fixed gold budget: n of the 37 x 1,500 record's problem ids (as strings),
+    chosen by a seeded hash, never by content. Anything fit with gold (the probe,
+    the confidence model, the fusion weights) is fit ONLY on these problems, and
+    evaluated ONLY on the others, so no problem's gold reaches its own label
+    through another language."""
+    ranked = sorted(range(n_problems), key=lambda i: hashlib.sha256(f"{SEED}-calib-{i}".encode()).hexdigest())
+    return {str(i) for i in ranked[:n]}
+
+
+def language_landslide_rate(pools):
+    """Label-free language descriptor: share of a language's pools whose own top
+    answer reaches the landslide threshold. Replaces hand-assigned tiers as a feature."""
+    tot, land = Counter(), Counter()
+    for p in pools.values():
+        tot[p["lang"]] += 1
+        land[p["lang"]] += p["share"] >= data.LANDSLIDE
+    return {lang: land[lang] / tot[lang] for lang in tot}

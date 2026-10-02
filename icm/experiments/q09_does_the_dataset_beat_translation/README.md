@@ -7,7 +7,13 @@ with LoRA on each of two training sets and evaluated on the held-out test split.
 | arm | completion for each (language, problem) | gold used? |
 |---|---|---|
 | `translated` | the dataset's translated gold solution | yes, by construction |
-| `method` | one of the model's own chains agreeing with the answer the method committed (voting + regeneration, record rules), picked at random | **no** |
+| `method` | one of the model's own chains agreeing with the answer the full pipeline committed (vote + resampling + problem-disjoint vote × probe fusion), picked at random | only the 300-problem calibration budget, never the problem's own gold |
+| `own_unlabelled` | one of the model's own chains, picked at random, **no labelling** (self-distillation control) | no |
+| `method_lenmatch` | the method's label, the chain closest in length to the translated solution (length control) | as `method` |
+
+Seeds: `translated`, `method`, `own_unlabelled` × 2; `method_lenmatch` × 1. Arms
+are compared seed-averaged with a paired bootstrap; the seed-to-seed
+difference is reported as the training-noise yardstick.
 
 **Matched on everything except the solution text:** same model, same 37
 languages, the same (language, problem) pairs in both arms (one example each,

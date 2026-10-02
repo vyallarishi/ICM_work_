@@ -3,20 +3,30 @@ languages it never saw.
 
 Every labelled pool gets P(label is correct), computed from the STRUCTURE of
 agreement only (own chains, other languages' final answers, how the label was
-reached). The model is fit with gold from OTHER languages (4-fold language
-split, stage 87) and applied once to the held-out fold, so no example's own
-language contributes gold to its confidence.
+reached). Gold budget, disjoint by language AND by problem: the model and its
+isotonic calibration are fit on the 300 CALIBRATION problems of the other
+folds' languages (4-fold language split, stage 87), and scored on the 1,200
+LABELLING problems of the held-out fold's languages.
 
-PRE-REGISTERED, on held-out languages, all folds pooled:
-    AUC >= 0.90,  ECE <= 0.03 (isotonic calibration, 10 bins),
-    precision of the confidence >= 0.95 stratum >= 0.97 in EVERY tier.
+PRE-REGISTERED, on held-out languages x labelling problems, all folds pooled:
+  (a) AUC >= 0.90;
+  (b) selective precision: the threshold that keeps 90% of TRAINING pools keeps
+      >= 85% of held-out pools at precision >= 97.5%;
+  (c) calibration where it is hard: on the "uncertain" pools (vetoed in the
+      first pass, labelled by regeneration, or < 70% of the pool agreeing with
+      the label), ECE <= 0.05 with n >= 500;
+  (d) precision >= 0.97 at confidence >= 0.95 in every tier, each with n >= 200.
+A base rate of ~94.5% makes overall ECE trivially small, so it is reported but
+not used as a bar.
 
 Features (no gold): local share and margin of the pool's own top answer,
 number of distinct answers, pool size, share of the pool agreeing with the
 final label, fraction of other languages whose final answer equals the label,
 share of the most common other-language answer, whether the label is that
 answer, how many other languages answered, whether the pool was vetoed in the
-first pass, whether the label came from regeneration, tier.
+first pass, whether the label came from regeneration, and the language's
+measured landslide rate (label-free; replaces hand-assigned tiers, which are
+used only to slice the report).
 
 Labels are the method's final answers (voting + regeneration, record rules),
 i.e. the dataset as it stands. Writes h2_confidence.json (metrics) and
@@ -33,14 +43,14 @@ from ...method import data, vote
 from ...method.regenerate import load_regen
 from ...paths import RUN_DIR
 from ..q09_does_the_dataset_beat_translation.build_sft_sets import committed_answers
-from .common import ROOT, auc, by_problem, exact, folds, write
+from .common import ROOT, auc, by_problem, calibration_problems, exact, folds, language_landslide_rate, write
 
 FEATURES = ("local_top_share", "local_margin", "n_distinct", "pool_size", "label_local_share",
             "world_agree", "world_top_share", "label_is_world_top", "n_world", "vetoed_first",
-            "from_regen", "tier_high", "tier_mid", "tier_low")
+            "from_regen", "lang_landslide_rate")
 
 
-def features(pool_full, label, others, first_kind_vetoed, from_regen, tier):
+def features(pool_full, label, others, first_kind_vetoed, from_regen, lang_rate):
     """No gold anywhere in here."""
     c = Counter(ch["answer"] for ch in pool_full["chains"]); n = sum(c.values())
     ranked = c.most_common()
@@ -55,8 +65,7 @@ def features(pool_full, label, others, first_kind_vetoed, from_regen, tier):
             "world_top_share": (wc.most_common(1)[0][1] / len(said)) if said else 0.0,
             "label_is_world_top": float(world_top is not None and data.match(world_top, label)),
             "n_world": float(len(said)), "vetoed_first": float(first_kind_vetoed),
-            "from_regen": float(from_regen),
-            "tier_high": float(tier == "high"), "tier_mid": float(tier == "mid"), "tier_low": float(tier == "low")}
+            "from_regen": float(from_regen), "lang_landslide_rate": float(lang_rate)}
 
 
 def fit_logistic(x, y, l2=1e-3, iters=50):
@@ -125,7 +134,7 @@ def self_test():
     check("isotonic output in [0,1]", isotonic_apply(cal, p).min() >= 0 and isotonic_apply(cal, p).max() <= 1)
     check("auc of a perfect score", auc(np.array([2.0, 3.0]), np.array([0.0, 1.0])) == 1.0)
     C = lambda a: {"answer": a, "text": "x"}
-    f = features({"chains": [C("4"), C("4"), C("9")]}, "4", ["4", "9", None, "4"], False, False, "low")
+    f = features({"chains": [C("4"), C("4"), C("9")]}, "4", ["4", "9", None, "4"], False, False, 0.6)
     check("features: world agree 2/3", abs(f["world_agree"] - 2 / 3) < 1e-9)
     check("features: label is world top", f["label_is_world_top"] == 1.0)
     check("features: no gold", "gold" not in f)
@@ -143,52 +152,68 @@ def main():
     first = vote.initialize(view)
     after_vote, _, _ = vote.converge({k: dict(v) for k, v in view.items()})
     final = committed_answers({k: dict(v) for k, v in view.items()}, load_regen(RUN_DIR / "stage25_regen.jsonl"))
-    probs = by_problem(full); fold = folds()
+    probs = by_problem(full); fold = folds(); cal = calibration_problems()
+    rate = language_landslide_rate(full)
 
-    ids, X, y, fo, tiers = [], [], [], [], []
+    ids, X, y, fo, tiers, is_cal, uncertain = [], [], [], [], [], [], []
     for iid, label in final.items():
         if label is None:
             continue
         p = full[iid]; lang = p["lang"]
         others = [final[o] for o in probs[iid.rsplit("_", 1)[-1]] if o != iid and full[o]["lang"] != lang]
-        f = features(p, label, others, first[iid]["kind"] == "contested" and first[iid]["answer"] is None,
-                     after_vote[iid]["answer"] is None, data.TIER[lang])
+        vetoed = first[iid]["kind"] == "contested" and first[iid]["answer"] is None
+        regen = after_vote[iid]["answer"] is None
+        f = features(p, label, others, vetoed, regen, rate[lang])
         ids.append(iid); X.append([f[k] for k in FEATURES]); y.append(float(exact(label, p["gold"])))
-        fo.append(fold[lang]); tiers.append(data.TIER[lang])
+        fo.append(fold[lang]); tiers.append(data.TIER[lang]); is_cal.append(iid.rsplit("_", 1)[-1] in cal)
+        uncertain.append(vetoed or regen or f["label_local_share"] < data.LANDSLIDE)
     X, y, fo, tiers = np.array(X), np.array(y), np.array(fo), np.array(tiers)
-    raw, cal = np.zeros(len(y)), np.zeros(len(y))
+    is_cal, uncertain = np.array(is_cal), np.array(uncertain)
+    held = np.zeros(len(y), bool); raw = np.zeros(len(y)); cal_p = np.zeros(len(y)); keep90 = np.zeros(len(y), bool)
     for k in sorted(set(fo)):
-        tr, te = fo != k, fo == k
+        tr = (fo != k) & is_cal
+        te = (fo == k) & ~is_cal
         m = fit_logistic(X[tr], y[tr])
-        iso = isotonic_fit(predict(m, X[tr]), y[tr])
-        raw[te] = predict(m, X[te]); cal[te] = isotonic_apply(iso, raw[te])
-        print(f"fold {k}: train {tr.sum()} pools, test {te.sum()} pools ({len(set(np.array(ids)[te]))} ids)", flush=True)
+        p_tr = predict(m, X[tr]); iso = isotonic_fit(p_tr, y[tr])
+        c_tr = isotonic_apply(iso, p_tr)
+        thr = float(np.quantile(c_tr, 0.10))                  # keeps 90% of training pools
+        raw[te] = predict(m, X[te]); cal_p[te] = isotonic_apply(iso, raw[te]); keep90[te] = cal_p[te] >= thr
+        held |= te
+        print(f"fold {k}: fit on {tr.sum()} pools (calibration problems, other languages); "
+              f"scored on {te.sum()} (labelling problems, held-out languages); 90%-keep threshold {thr:.3f}", flush=True)
 
-    out = {"n_labelled": int(len(y)), "base_precision": round(float(y.mean()), 4), "slices": {}}
-    for sl in ("ALL", "high", "mid", "low"):
-        m = np.ones(len(y), bool) if sl == "ALL" else tiers == sl
-        yy, pr, pc = y[m], raw[m], cal[m]
+    out = {"n_scored": int(held.sum()), "slices": {}}
+    for sl in ("ALL", "high", "mid", "low", "uncertain"):
+        m = held & (np.ones(len(y), bool) if sl == "ALL" else uncertain if sl == "uncertain" else tiers == sl)
+        yy, pr, pc = y[m], raw[m], cal_p[m]
         strata = {}
-        n_all_tier = m.sum()
         for t in (0.5, 0.8, 0.9, 0.95, 0.98, 0.99):
             s = pc >= t
-            strata[str(t)] = {"share_of_labelled": round(float(s.mean()), 4),
+            strata[str(t)] = {"n": int(s.sum()), "share": round(float(s.mean()), 4),
                               "precision": round(float(yy[s].mean()), 4) if s.any() else None}
-        out["slices"][sl] = {"n": int(n_all_tier), "precision": round(float(yy.mean()), 4),
-                             "auc": round(auc(pc[yy == 1], pc[yy == 0]), 4) if 0 < yy.sum() < len(yy) else None,
-                             "auc_raw": round(auc(pr[yy == 1], pr[yy == 0]), 4) if 0 < yy.sum() < len(yy) else None,
+        two = 0 < yy.sum() < len(yy)
+        out["slices"][sl] = {"n": int(m.sum()), "precision": round(float(yy.mean()), 4),
+                             "auc": round(auc(pc[yy == 1], pc[yy == 0]), 4) if two else None,
+                             "auc_raw": round(auc(pr[yy == 1], pr[yy == 0]), 4) if two else None,
                              "ece_isotonic": round(ece(pc, yy), 4), "ece_raw": round(ece(pr, yy), 4),
-                             "brier": round(float(((pc - yy) ** 2).mean()), 4), "strata": strata}
+                             "keep90_retention": round(float(keep90[m].mean()), 4),
+                             "keep90_precision": round(float(yy[keep90[m]].mean()), 4) if keep90[m].any() else None,
+                             "strata": strata}
         o = out["slices"][sl]
-        print(f"{sl:<5} n {o['n']:>6}  precision {o['precision']:.4f}  AUC {o['auc']}  ECE iso {o['ece_isotonic']} "
-              f"(raw {o['ece_raw']})  >=0.95: {strata['0.95']}  >=0.98: {strata['0.98']}")
-    a = out["slices"]["ALL"]
-    holds = (a["auc"] >= 0.90 and a["ece_isotonic"] <= 0.03 and
-             all((out["slices"][t]["strata"]["0.95"]["precision"] or 0) >= 0.97 for t in ("high", "mid", "low")))
-    out["H2_holds"] = bool(holds)
-    print(f"\nH2 {'HOLDS' if holds else 'FAILS'} (bars: AUC >= 0.90, ECE <= 0.03, precision >= 0.97 at conf >= 0.95 in every tier)")
+        print(f"{sl:<9} n {o['n']:>6}  precision {o['precision']:.4f}  AUC {o['auc']}  ECE {o['ece_isotonic']}  "
+              f"keep-90%: retains {o['keep90_retention']:.3f} at precision {o['keep90_precision']}  "
+              f">=0.95: {strata['0.95']}")
+    a, u = out["slices"]["ALL"], out["slices"]["uncertain"]
+    bars = {"a_auc": (a["auc"] or 0) >= 0.90,
+            "b_selective": a["keep90_retention"] >= 0.85 and (a["keep90_precision"] or 0) >= 0.975,
+            "c_uncertain_ece": u["n"] >= 500 and u["ece_isotonic"] <= 0.05,
+            "d_tiers": all(out["slices"][t]["strata"]["0.95"]["n"] >= 200 and
+                           (out["slices"][t]["strata"]["0.95"]["precision"] or 0) >= 0.97 for t in ("high", "mid", "low"))}
+    out["bars"] = bars; out["H2_holds"] = all(bars.values())
+    print("\nH2 bars: " + "  ".join(f"{k} {'ok' if v else 'FAIL'}" for k, v in bars.items())
+          + f"  ->  H2 {'HOLDS' if out['H2_holds'] else 'FAILS'}")
     write("h2_confidence.json", out)
-    write("h2_confidence_per_pool.json", {i: round(float(c), 5) for i, c in zip(ids, cal)})
+    write("h2_confidence_per_pool.json", {i: round(float(c), 5) for i, c, h in zip(ids, cal_p, held) if h})
 
 
 if __name__ == "__main__":

@@ -4,9 +4,11 @@
     per problem (5 seeds). Rule: the pipeline's first pass + one vote round
     (icm.method.vote.initialize logic, then update_pool against the jury),
     v2 rules, exact scoring. k in {1, 2, 4, 8, 12, 16, 24, 36}.
-    PRE-REGISTERED: precision increases from k=1 to k=16 by >= 2 points, and
-    the gain from k=24 to k=36 is < 0.5 points (diminishing returns). That
-    predicts what the 13 extra languages of the 50-language run can add.
+    PRE-REGISTERED, on CORRECT LABELS PER POOL (coverage x precision; precision
+    alone would reward small juries for abstaining more): it rises from k=1 to
+    k=16 by >= 2 points, and the gain from k=24 to k=36 is < 0.5 points
+    (diminishing returns). That predicts what the 13 extra languages of the
+    50-language run can add. Precision and coverage are reported alongside.
 (b) CHAINS PER POOL. Each pool keeps n random chains (3 seeds), n in
     {2, 4, 8, 12, 16, all}; full pipeline voting (v2, all 37 languages).
     PRE-REGISTERED: coverage rises with n; precision at n=8 is within 1 point
@@ -77,7 +79,7 @@ def jury_curve(pools):
     probs = by_problem(pools); plur = first_pass_plurality(pools)
     rows = {}
     for k in KS:
-        prec, cov = [], []
+        prec, cov, acc = [], [], []
         for seed in range(5):
             rng = random.Random(f"{SEED}-{k}-{seed}")
             answers = {}
@@ -87,12 +89,12 @@ def jury_curve(pools):
                     jury = rng.sample(others, min(k, len(others)))
                     answers[iid] = decide_with_jury(pools[iid], [plur[o] for o in jury])
             answered = [i for i, a in answers.items() if a is not None]
-            cov.append(len(answered) / len(answers))
-            prec.append(sum(exact(answers[i], pools[i]["gold"]) for i in answered) / len(answered))
-        rows[k] = {"precision": round(float(np.mean(prec)), 4), "precision_sd": round(float(np.std(prec)), 4),
-                   "coverage": round(float(np.mean(cov)), 4)}
-        print(f"jury k={k:>2}: precision {100 * rows[k]['precision']:.2f} (sd {100 * rows[k]['precision_sd']:.2f})  "
-              f"coverage {100 * rows[k]['coverage']:.2f}", flush=True)
+            right = sum(exact(answers[i], pools[i]["gold"]) for i in answered)
+            cov.append(len(answered) / len(answers)); prec.append(right / len(answered)); acc.append(right / len(answers))
+        rows[k] = {"correct_per_pool": round(float(np.mean(acc)), 4), "correct_sd": round(float(np.std(acc)), 4),
+                   "precision": round(float(np.mean(prec)), 4), "coverage": round(float(np.mean(cov)), 4)}
+        print(f"jury k={k:>2}: correct per pool {100 * rows[k]['correct_per_pool']:.2f} (sd {100 * rows[k]['correct_sd']:.2f})  "
+              f"precision {100 * rows[k]['precision']:.2f}  coverage {100 * rows[k]['coverage']:.2f}", flush=True)
     return rows
 
 
@@ -131,7 +133,8 @@ def main():
     jury = jury_curve(pools)
     print("== (b) chains per pool")
     chains = chains_curve(full)
-    a = 100 * (jury[16]["precision"] - jury[1]["precision"]); b = 100 * (jury[36]["precision"] - jury[24]["precision"])
+    a = 100 * (jury[16]["correct_per_pool"] - jury[1]["correct_per_pool"])
+    b = 100 * (jury[36]["correct_per_pool"] - jury[24]["correct_per_pool"])
     c = 100 * abs(chains["8"]["precision"] - chains["all"]["precision"])
     covs = [chains[str(n or "all")]["coverage"] for n in NS]
     verdict = {"jury_gain_1_to_16": round(a, 2), "jury_gain_24_to_36": round(b, 2),
@@ -139,7 +142,8 @@ def main():
                "chains_precision_gap_8_vs_all": round(c, 2),
                "coverage_monotone": all(x <= y + 1e-4 for x, y in zip(covs, covs[1:])),
                "H5b_holds": c <= 1.0 and all(x <= y + 1e-4 for x, y in zip(covs, covs[1:]))}
-    print(f"\nH5a jury: +{a:.2f} (1->16), {b:+.2f} (24->36) -> {'HOLDS' if verdict['H5a_holds'] else 'FAILS'}")
+    print(f"\nH5a jury (correct labels per pool): {a:+.2f} (1->16), {b:+.2f} (24->36) -> "
+          f"{'HOLDS' if verdict['H5a_holds'] else 'FAILS'}")
     print(f"H5b chains: |prec(8) - prec(all)| = {c:.2f}, coverage monotone {verdict['coverage_monotone']} -> "
           f"{'HOLDS' if verdict['H5b_holds'] else 'FAILS'}")
     write("h5_scaling.json", {"jury": jury, "chains": chains, "verdict": verdict})

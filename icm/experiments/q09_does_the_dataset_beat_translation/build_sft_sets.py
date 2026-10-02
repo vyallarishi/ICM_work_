@@ -20,6 +20,12 @@ THE TWO ARMS ARE MATCHED ON EVERYTHING EXCEPT THE SOLUTION TEXT:
                 regeneration, record rules), chosen uniformly at random with a
                 per-pool seed. NO GOLD: the committed answer is label-free and
                 the chain is not checked against gold.
+    With --with-fusion, `method` is the FULL pipeline: its label is replaced by
+    the problem-disjoint, per-tier vote x probe fusion (probe_work_ q10) where
+    the fusion decided differently. Chains are then picked exactly as above.
+    own_unlabelled  one of the model's own chains, random, NO labelling (control)
+    method_lenmatch the method's label, the chain closest in length to the
+                translated solution (control for "more tokens")
     method_full (with --with-probe) the method with its probe channel: in
                 HIGH-RESOURCE pools the vote marked contested, the committed
                 answer is the probe's (4-fold, never trained on that language;
@@ -154,6 +160,9 @@ def self_test():
     check("probe stats", (st2["relabelled"], st2["probe_answer_has_no_chain_with_answer_line"]), (1, 1))
     full3 = {"train_en_7": {"chains": [C("5", "a\n#### 5"), C("5", "a much longer chain\nwith steps\n#### 5"), C("6", "b\n#### 6")]}}
     lm = lenmatch_arm({"train_en_7": (" a\n#### 5", " a much longer chain\nwith steps!\n#### 5", "5")}, full3, {"train_en_7": "5"})
+    own = own_unlabelled_arm({"train_en_7": None}, full3)
+    check("own_unlabelled is deterministic", own, own_unlabelled_arm({"train_en_7": None}, full3))
+    check("own_unlabelled can pick any answer (no label)", own["train_en_7"][1] in ("5", "6"), True)
     check("lenmatch picks the closest length, same answer", lm["train_en_7"], (" a much longer chain\nwith steps\n#### 5", "5"))
     print("ALL SELF-TESTS PASSED" if ok else "SELF-TEST FAILED")
     return ok
@@ -161,6 +170,18 @@ def self_test():
 
 PROBE_COMMITS = Path("/home/rvyalla/multilingual_icm/data/probe_work_/runs/q09_probe_commits.json")
 FUSION_COMMITS = Path("/home/rvyalla/multilingual_icm/data/probe_work_/runs/q10_fusion_commits_alltiers.json")
+
+
+def own_unlabelled_arm(pairs, full):
+    """own_unlabelled: ONE of the model's own chains for the pool, chosen at random
+    with no labelling at all (any answer, as long as it has an answer line). The
+    self-distillation control: if it matches `method`, the labelling adds nothing."""
+    out = {}
+    for iid in pairs:
+        cands = [c for c in full[iid]["chains"] if completion_of(c["text"])]
+        c = random.Random(f"{SEED}-{iid}-own").choice(cands)
+        out[iid] = (completion_of(c["text"]), c["answer"])
+    return out
 
 
 def lenmatch_arm(pairs, full, committed):
@@ -223,12 +244,8 @@ def main():
     train = load_split_rows("train", langs)
     pairs, stats = build_pairs(full, committed, train)
 
-    out = {"translated": RUN_DIR / "q09_sft_translated.jsonl", "method": RUN_DIR / "q09_sft_method.jsonl"}
-    with open(out["method"], "w", encoding="utf-8") as hm, open(out["translated"], "w", encoding="utf-8") as ht:
-        for iid, (mc, tc, _) in pairs.items():
-            base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
-            hm.write(json.dumps({**base, "completion": mc}, ensure_ascii=False) + "\n")
-            ht.write(json.dumps({**base, "completion": tc}, ensure_ascii=False) + "\n")
+    out = {}
+
     def write_arm(name, arm):
         out[name] = RUN_DIR / f"q09_sft_{name}.jsonl"
         with open(out[name], "w", encoding="utf-8") as hf:
@@ -236,27 +253,29 @@ def main():
                 base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
                 hf.write(json.dumps({**base, "completion": arm[iid][0]}, ensure_ascii=False) + "\n")
 
+    vote_arm = {iid: (mc, ans) for iid, (mc, tc, ans) in pairs.items()}
+    write_arm("translated", {iid: (tc, None) for iid, (mc, tc, ans) in pairs.items()})
     extra = {}
     if a.with_fusion:
         commits = json.loads(FUSION_COMMITS.read_text())["commits"]
-        arm, fstats = probe_arm(pairs, full, commits)
-        write_arm("method_fusion", arm); extra["method_fusion"] = arm
+        method_arm, fstats = probe_arm(pairs, full, commits)
         print("fusion channel:", json.dumps(dict(fstats)),
               f"(fusion answers for {len(commits)} pools; {sum(i in pairs for i in commits)} in the matched set)")
+    else:
+        method_arm = vote_arm
+    write_arm("method", method_arm); extra["method"] = method_arm
+    label_of = {iid: v[1] for iid, v in method_arm.items()}
+    own = own_unlabelled_arm(pairs, full)
+    write_arm("own_unlabelled", own); extra["own_unlabelled"] = own
     if a.with_lenmatch:
-        arm = lenmatch_arm(pairs, full, committed)
-        write_arm("method_lenmatch", arm); extra["method_lenmatch"] = arm
+        lm = lenmatch_arm(pairs, full, label_of)
+        write_arm("method_lenmatch", lm); extra["method_lenmatch"] = lm
     full_arm = None
     if a.with_probe:
         commits = json.loads(PROBE_COMMITS.read_text())["commits"]
         full_arm, pstats = probe_arm(pairs, full, commits)
-        out["method_full"] = RUN_DIR / "q09_sft_method_full.jsonl"
-        with open(out["method_full"], "w", encoding="utf-8") as hf:
-            for iid in pairs:
-                base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
-                hf.write(json.dumps({**base, "completion": full_arm[iid][0]}, ensure_ascii=False) + "\n")
-        print("probe channel:", json.dumps(dict(pstats)),
-              f"(probe answers for {len(commits)} pools; {sum(i in pairs for i in commits)} are in the matched set)")
+        write_arm("method_full", full_arm)
+        print("naive probe channel (contested gate):", json.dumps(dict(pstats)))
 
     # evaluation set: test split, first N problems per language by numeric id
     test = load_split_rows("test", langs)
@@ -292,14 +311,15 @@ def main():
     gold = {i: Decimal(data.norm(full[i]["gold"])) for i in pairs}
     correct = sum(Decimal(v[2]) == gold[i] for i, v in pairs.items())
     print(f"\nAUDIT (gold read here only, after writing): correct answers in the training set")
-    print(f"  method       {correct}/{len(pairs)} = {100 * correct / len(pairs):.2f}%")
+    print(f"  vote-only label {correct}/{len(pairs)} = {100 * correct / len(pairs):.2f}%")
     for name, arm in extra.items():
         ca = sum(Decimal(v[1]) == gold[i] for i, v in arm.items())
         changed = [i for i in pairs if Decimal(arm[i][1]) != Decimal(pairs[i][2])]
         fixed = sum(Decimal(arm[i][1]) == gold[i] for i in changed)
         broke = sum(Decimal(pairs[i][2]) == gold[i] for i in changed)
         print(f"  {name:<16}{ca}/{len(pairs)} = {100 * ca / len(pairs):.2f}%   "
-              f"(labels changed vs method: {len(changed)}; {fixed} now correct, {broke} were correct before)")
+              f"(answers differing from the vote-only label: {len(changed)}; {fixed} correct where the vote was not, "
+              f"{broke} wrong where the vote was right)")
     if full_arm:
         cf = sum(Decimal(v[1]) == gold[i] for i, v in full_arm.items())
         changed = [i for i in pairs if Decimal(full_arm[i][1]) != Decimal(pairs[i][2])]
