@@ -2,6 +2,7 @@
 # Q09 step 2 (GPU, 4 x H100): LoRA fine-tuning on ONE arm. Submit once per arm:
 #     ARM=translated sbatch train_lora.sbatch
 #     ARM=method     sbatch train_lora.sbatch
+#     ARM=method_full sbatch train_lora.sbatch
 # Everything except the data file is identical between the two runs.
 # Smoke test first (20 steps):  ARM=method SMOKE=1 sbatch train_lora.sbatch
 #SBATCH --account=rrg-zhijing
@@ -22,7 +23,7 @@ set -Eeuo pipefail
 PROJECT_STORAGE="${PROJECT:-${HOME}}"
 cd /home/rvyalla/multilingual_icm/data/ICM_work_/runs
 export PYTHONPATH="/home/rvyalla/multilingual_icm/ICM_work_${PYTHONPATH:+:$PYTHONPATH}"
-: "${ARM:?set ARM=translated or ARM=method}"
+: "${ARM:?set ARM=translated, method or method_full}"
 source "${PROJECT_STORAGE}/venvs/sm-icm/bin/activate"
 export TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

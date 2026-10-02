@@ -25,5 +25,5 @@ export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 VLLM_WORKER_MULTIPROC_METHOD=spaw
 A=/scratch/rvyalla/multilingual-icm/results/q09/adapters
 S=${SMOKE:+_smoke}
 python -u -m icm.experiments.q09_does_the_dataset_beat_translation.evaluate \
-    --adapter translated=$A/translated$S --adapter method=$A/method$S \
+    --adapter translated=$A/translated$S --adapter method=$A/method$S --adapter method_full=$A/method_full$S \
     --out q09_results$S.json ${SMOKE:+--limit-per-lang 10}

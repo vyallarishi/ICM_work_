@@ -18,15 +18,17 @@ prints per-language lengths of both arms and flags any language where they
 differ by more than a third. Gold is read only after the sets are written, to
 report how many method examples are actually correct.
 
-Not in this pilot: the probe channel for high-resource hard pools (it needs
-activations for every chain, which exist only for a subset); the method arm
-here is the voting + regeneration labels.
+Two method arms: `method` (voting + regeneration) and `method_full` (the
+same, plus the probe channel: high-resource pools the vote marked contested
+are labelled by a 4-fold probe never trained on that language; see
+probe_work_ `q09_probe_labels_for_finetuning`). They differ only on the pools
+the probe relabelled, so their comparison isolates the probe channel.
 
 | file | step |
 |---|---|
-| `build_sft_sets.py` / `.sbatch` | CPU: both training sets + the test-split eval set (250 problems × 37 languages) |
-| `train_lora.py` / `.sbatch` | GPU 4 × H100: LoRA r=16 on all linear layers, 1 epoch, lr 2e-4; `ARM=translated` or `ARM=method` |
-| `evaluate.py` / `.sbatch` | GPU 1 × H100: base, translated, method; accuracy overall, by tier, by language |
+| `build_sft_sets.py` / `.sbatch` | CPU: the three training sets + the test-split eval set (250 problems × 37 languages) |
+| `train_lora.py` / `.sbatch` | GPU 4 × H100: LoRA r=16 on all linear layers, 1 epoch, lr 2e-4; `ARM=translated`, `method` or `method_full` |
+| `evaluate.py` / `.sbatch` | GPU 1 × H100: base and the three arms; accuracy overall, by tier, by language |
 
 Outputs: `data/ICM_work_/runs/q09_*.jsonl`, `q09_results.json`; adapters in
 `/scratch/.../results/q09/adapters/`.

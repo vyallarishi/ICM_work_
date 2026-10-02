@@ -20,6 +20,11 @@ THE TWO ARMS ARE MATCHED ON EVERYTHING EXCEPT THE SOLUTION TEXT:
                 regeneration, record rules), chosen uniformly at random with a
                 per-pool seed. NO GOLD: the committed answer is label-free and
                 the chain is not checked against gold.
+    method_full (with --with-probe) the method with its probe channel: in
+                HIGH-RESOURCE pools the vote marked contested, the committed
+                answer is the probe's (4-fold, never trained on that language;
+                probe_work_ q09_probe_labels_for_finetuning). Every other pool
+                is identical to `method`, chain for chain. Still no gold.
 
 Gold is read only AFTER both sets are written, to print an audit (how many
 method examples are actually correct); it does not influence either set.
@@ -140,13 +145,49 @@ def self_test():
     check("stats", (st["method_abstained"], st["no_method_chain_with_answer_line"], st["no_usable_translation"]), (1, 1, 1))
     check("deterministic pick", pick_method_chain("p", [C("5", "a\n#### 5"), C("5", "b\n#### 5")], "5"),
           pick_method_chain("p", [C("5", "a\n#### 5"), C("5", "b\n#### 5")], "5"))
+    full2 = {"train_en_9": {"chains": [C("5", "a\n#### 5"), C("6", "b\n#### 6")]},
+             "train_en_8": {"chains": [C("5", "c\n#### 5")]}}
+    pairs2 = {"train_en_9": (" a\n#### 5", " t\n#### 5", "5"), "train_en_8": (" c\n#### 5", " t\n#### 5", "5")}
+    arm, st2 = probe_arm(pairs2, full2, {"train_en_9": "6", "train_en_8": "7"})
+    check("probe relabels", arm["train_en_9"], (" b\n#### 6", "6"))
+    check("no chain for probe answer -> unchanged", arm["train_en_8"], (" c\n#### 5", "5"))
+    check("probe stats", (st2["relabelled"], st2["probe_answer_has_no_chain_with_answer_line"]), (1, 1))
     print("ALL SELF-TESTS PASSED" if ok else "SELF-TEST FAILED")
     return ok
+
+
+PROBE_COMMITS = Path("/home/rvyalla/multilingual_icm/data/probe_work_/runs/q09_probe_commits.json")
+
+
+def probe_arm(pairs, full, probe_commits):
+    """method_full completions: the probe's answer where it relabelled a pool,
+    otherwise exactly the `method` completion."""
+    out, stats = {}, Counter()
+    for iid, (mc, tc, ans) in pairs.items():
+        p = probe_commits.get(iid)
+        if p is None:
+            out[iid] = (mc, ans)
+            continue
+        stats["routed"] += 1
+        if data.match(p, ans):
+            out[iid] = (mc, ans)
+            stats["probe_agrees_with_vote"] += 1
+            continue
+        chain = pick_method_chain(iid, full[iid]["chains"], p)
+        if chain is None:
+            out[iid] = (mc, ans)
+            stats["probe_answer_has_no_chain_with_answer_line"] += 1
+            continue
+        out[iid] = (completion_of(chain["text"]), chain["answer"])
+        stats["relabelled"] += 1
+    return out, stats
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-test", action="store_true")
+    ap.add_argument("--with-probe", action="store_true",
+                    help=f"also build method_full from {PROBE_COMMITS}")
     ap.add_argument("--n-eval", type=int, default=N_EVAL)
     a = ap.parse_args()
     if a.self_test:
@@ -167,6 +208,17 @@ def main():
             base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
             hm.write(json.dumps({**base, "completion": mc}, ensure_ascii=False) + "\n")
             ht.write(json.dumps({**base, "completion": tc}, ensure_ascii=False) + "\n")
+    full_arm = None
+    if a.with_probe:
+        commits = json.loads(PROBE_COMMITS.read_text())["commits"]
+        full_arm, pstats = probe_arm(pairs, full, commits)
+        out["method_full"] = RUN_DIR / "q09_sft_method_full.jsonl"
+        with open(out["method_full"], "w", encoding="utf-8") as hf:
+            for iid in pairs:
+                base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
+                hf.write(json.dumps({**base, "completion": full_arm[iid][0]}, ensure_ascii=False) + "\n")
+        print("probe channel:", json.dumps(dict(pstats)),
+              f"(probe answers for {len(commits)} pools; {sum(i in pairs for i in commits)} are in the matched set)")
 
     # evaluation set: test split, first N problems per language by numeric id
     test = load_split_rows("test", langs)
@@ -196,10 +248,18 @@ def main():
     tot_m = sum(len(v[0]) for v in pairs.values()); tot_t = sum(len(v[1]) for v in pairs.values())
     print(f"ALL    total chars method {tot_m}  translated {tot_t}  ratio {tot_m / tot_t:.2f}"
           + (f"   LENGTH-IMBALANCED languages: {flagged}" if flagged else ""))
-    correct = sum(Decimal(v[2]) == Decimal(data.norm(full[i]["gold"])) for i, v in pairs.items())
-    print(f"\nAUDIT (gold read here only): method examples whose answer is correct: {correct}/{len(pairs)} "
-          f"= {100 * correct / len(pairs):.2f}%")
-    print(f"wrote {out['method']}, {out['translated']}, {RUN_DIR / 'q09_eval.jsonl'} "
+    gold = {i: Decimal(data.norm(full[i]["gold"])) for i in pairs}
+    correct = sum(Decimal(v[2]) == gold[i] for i, v in pairs.items())
+    print(f"\nAUDIT (gold read here only, after writing): correct answers in the training set")
+    print(f"  method       {correct}/{len(pairs)} = {100 * correct / len(pairs):.2f}%")
+    if full_arm:
+        cf = sum(Decimal(v[1]) == gold[i] for i, v in full_arm.items())
+        changed = [i for i in pairs if Decimal(full_arm[i][1]) != Decimal(pairs[i][2])]
+        fixed = sum(Decimal(full_arm[i][1]) == gold[i] for i in changed)
+        broke = sum(Decimal(pairs[i][2]) == gold[i] for i in changed)
+        print(f"  method_full  {cf}/{len(pairs)} = {100 * cf / len(pairs):.2f}%   "
+              f"(probe changed {len(changed)} labels: {fixed} now correct, {broke} were correct before)")
+    print(f"wrote {', '.join(str(v) for v in out.values())}, {RUN_DIR / 'q09_eval.jsonl'} "
           f"({sum(min(len(by_lang[l]), a.n_eval) for l in langs)} eval prompts)")
 
 
