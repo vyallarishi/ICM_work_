@@ -30,4 +30,5 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 OUT=/scratch/rvyalla/multilingual-icm/results/q09/adapters/$ARM${SMOKE:+_smoke}
 mkdir -p "$OUT"
 torchrun --standalone --nproc_per_node 4 -m icm.experiments.q09_does_the_dataset_beat_translation.train_lora \
-    --data q09_sft_$ARM.jsonl --out "$OUT" ${SMOKE:+--max-steps 20}
+    --data q09_sft_$ARM.jsonl --out "$OUT" ${SMOKE:+--max-steps 20} \
+    --match q09_sft_translated.jsonl --match q09_sft_method.jsonl --match q09_sft_method_full.jsonl

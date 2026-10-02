@@ -29,6 +29,9 @@ def main():
     ap.add_argument("--grad-accum", type=int, default=2)
     ap.add_argument("--seed", type=int, default=20261002)
     ap.add_argument("--max-steps", type=int, default=-1, help="smoke test: stop after N steps")
+    ap.add_argument("--match", action="append", default=[],
+                    help="other arms' files: an id too long in ANY arm is dropped from this one too, "
+                         "so every arm trains on exactly the same pairs")
     a = ap.parse_args()
 
     import torch
@@ -42,19 +45,30 @@ def main():
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
 
+    def too_long(path):
+        out = set()
+        for line in open(path, encoding="utf-8"):
+            r = json.loads(line)
+            n = len(tok(r["prompt"], add_special_tokens=False)["input_ids"]) + \
+                len(tok(r["completion"], add_special_tokens=False)["input_ids"]) + 1
+            if n > a.max_len:
+                out.add(r["id"])
+        return out
+
+    excluded = set().union(*[too_long(f) for f in [a.data] + a.match])
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8")]
     examples, dropped = [], 0
     for r in rows:
-        p = tok(r["prompt"], add_special_tokens=False)["input_ids"]
-        c = tok(r["completion"], add_special_tokens=False)["input_ids"] + [tok.eos_token_id]
-        if len(p) + len(c) > a.max_len:
+        if r["id"] in excluded:
             dropped += 1
             continue
+        p = tok(r["prompt"], add_special_tokens=False)["input_ids"]
+        c = tok(r["completion"], add_special_tokens=False)["input_ids"] + [tok.eos_token_id]
         examples.append({"input_ids": p + c, "labels": [-100] * len(p) + c})
     if rank0:
         n_tok = sum(len(e["input_ids"]) for e in examples)
         n_sup = sum(sum(1 for t in e["labels"] if t != -100) for e in examples)
-        print(f"{a.data}: {len(rows)} examples, {dropped} dropped (> {a.max_len} tokens), "
+        print(f"{a.data}: {len(rows)} examples, {dropped} dropped (> {a.max_len} tokens in this or a matched arm), "
               f"{len(examples)} kept; {n_tok} tokens, {n_sup} supervised", flush=True)
 
     def collate(batch):
