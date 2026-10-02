@@ -15,6 +15,7 @@ its files.
 | [q07_audits/](q07_audits/) | Is the code right? | Gold-blind claim holds. Two bugs found (fixes included); several caveats. |
 | [q08_earlier_8b_study/](q08_earlier_8b_study/) | The earlier study on Qwen3-8B (chronologically first): can plain voting label the data? Does the original ICM scorer work? | Voting: ~88% coverage at ~95%. The ICM scorer: no, its score was mostly a bias for the letter "A". |
 | [q09_does_the_dataset_beat_translation/](q09_does_the_dataset_beat_translation/) | Does fine-tuning on the method's chains beat fine-tuning on translated gold solutions? (pilot, 37 × 1,500) | *running* |
+| [q10_pipeline_hypotheses/](q10_pipeline_hypotheses/) | The pre-registered hypotheses behind the 50-language dataset pipeline (H1–H7) | *running* |
 
 ## Conventions
 

@@ -152,11 +152,29 @@ def self_test():
     check("probe relabels", arm["train_en_9"], (" b\n#### 6", "6"))
     check("no chain for probe answer -> unchanged", arm["train_en_8"], (" c\n#### 5", "5"))
     check("probe stats", (st2["relabelled"], st2["probe_answer_has_no_chain_with_answer_line"]), (1, 1))
+    full3 = {"train_en_7": {"chains": [C("5", "a\n#### 5"), C("5", "a much longer chain\nwith steps\n#### 5"), C("6", "b\n#### 6")]}}
+    lm = lenmatch_arm({"train_en_7": (" a\n#### 5", " a much longer chain\nwith steps!\n#### 5", "5")}, full3, {"train_en_7": "5"})
+    check("lenmatch picks the closest length, same answer", lm["train_en_7"], (" a much longer chain\nwith steps\n#### 5", "5"))
     print("ALL SELF-TESTS PASSED" if ok else "SELF-TEST FAILED")
     return ok
 
 
 PROBE_COMMITS = Path("/home/rvyalla/multilingual_icm/data/probe_work_/runs/q09_probe_commits.json")
+FUSION_COMMITS = Path("/home/rvyalla/multilingual_icm/data/probe_work_/runs/q10_fusion_commits_alltiers.json")
+
+
+def lenmatch_arm(pairs, full, committed):
+    """method_lenmatch: same label as `method`, but the chain whose completion length is
+    closest to the translated solution's (ties: the per-pool seeded random order).
+    Label-free; the translation is used only as a length reference. Controls for
+    "the method arm just has more tokens"."""
+    out = {}
+    for iid, (mc, tc, ans) in pairs.items():
+        cands = [c for c in full[iid]["chains"] if data.match(c["answer"], committed[iid]) and completion_of(c["text"])]
+        random.Random(f"{SEED}-{iid}-len").shuffle(cands)
+        best = min(cands, key=lambda c: abs(len(completion_of(c["text"])) - len(tc)))
+        out[iid] = (completion_of(best["text"]), best["answer"])
+    return out
 
 
 def probe_arm(pairs, full, probe_commits):
@@ -187,7 +205,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--with-probe", action="store_true",
-                    help=f"also build method_full from {PROBE_COMMITS}")
+                    help=f"also build method_full from {PROBE_COMMITS} (naive contested gate)")
+    ap.add_argument("--with-fusion", action="store_true",
+                    help=f"also build method_fusion from {FUSION_COMMITS} (per-tier tuned fusion, q10)")
+    ap.add_argument("--with-lenmatch", action="store_true", help="also build method_lenmatch (length control)")
     ap.add_argument("--n-eval", type=int, default=N_EVAL)
     a = ap.parse_args()
     if a.self_test:
@@ -208,6 +229,23 @@ def main():
             base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
             hm.write(json.dumps({**base, "completion": mc}, ensure_ascii=False) + "\n")
             ht.write(json.dumps({**base, "completion": tc}, ensure_ascii=False) + "\n")
+    def write_arm(name, arm):
+        out[name] = RUN_DIR / f"q09_sft_{name}.jsonl"
+        with open(out[name], "w", encoding="utf-8") as hf:
+            for iid in pairs:
+                base = {"id": iid, "lang": full[iid]["lang"], "prompt": prompt_of(train[iid]["question"])}
+                hf.write(json.dumps({**base, "completion": arm[iid][0]}, ensure_ascii=False) + "\n")
+
+    extra = {}
+    if a.with_fusion:
+        commits = json.loads(FUSION_COMMITS.read_text())["commits"]
+        arm, fstats = probe_arm(pairs, full, commits)
+        write_arm("method_fusion", arm); extra["method_fusion"] = arm
+        print("fusion channel:", json.dumps(dict(fstats)),
+              f"(fusion answers for {len(commits)} pools; {sum(i in pairs for i in commits)} in the matched set)")
+    if a.with_lenmatch:
+        arm = lenmatch_arm(pairs, full, committed)
+        write_arm("method_lenmatch", arm); extra["method_lenmatch"] = arm
     full_arm = None
     if a.with_probe:
         commits = json.loads(PROBE_COMMITS.read_text())["commits"]
@@ -248,10 +286,20 @@ def main():
     tot_m = sum(len(v[0]) for v in pairs.values()); tot_t = sum(len(v[1]) for v in pairs.values())
     print(f"ALL    total chars method {tot_m}  translated {tot_t}  ratio {tot_m / tot_t:.2f}"
           + (f"   LENGTH-IMBALANCED languages: {flagged}" if flagged else ""))
+    for name, arm in extra.items():
+        tot = sum(len(v[0]) for v in arm.values())
+        print(f"       total chars {name} {tot}  ratio to translated {tot / tot_t:.2f}")
     gold = {i: Decimal(data.norm(full[i]["gold"])) for i in pairs}
     correct = sum(Decimal(v[2]) == gold[i] for i, v in pairs.items())
     print(f"\nAUDIT (gold read here only, after writing): correct answers in the training set")
     print(f"  method       {correct}/{len(pairs)} = {100 * correct / len(pairs):.2f}%")
+    for name, arm in extra.items():
+        ca = sum(Decimal(v[1]) == gold[i] for i, v in arm.items())
+        changed = [i for i in pairs if Decimal(arm[i][1]) != Decimal(pairs[i][2])]
+        fixed = sum(Decimal(arm[i][1]) == gold[i] for i in changed)
+        broke = sum(Decimal(pairs[i][2]) == gold[i] for i in changed)
+        print(f"  {name:<16}{ca}/{len(pairs)} = {100 * ca / len(pairs):.2f}%   "
+              f"(labels changed vs method: {len(changed)}; {fixed} now correct, {broke} were correct before)")
     if full_arm:
         cf = sum(Decimal(v[1]) == gold[i] for i, v in full_arm.items())
         changed = [i for i in pairs if Decimal(full_arm[i][1]) != Decimal(pairs[i][2])]
