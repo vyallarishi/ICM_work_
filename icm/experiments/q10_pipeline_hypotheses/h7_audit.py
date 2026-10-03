@@ -36,6 +36,8 @@ VARIANT_ROOT = "/scratch/rvyalla/multilingual-icm/results/qwen3-14b-variants500"
 
 def main():
     index = json.loads((RUN_DIR / "h7_variants_index.json").read_text())
+    for v in index.values():   # 4 GSM8K source answers carry thousands separators ("1,080")
+        v["answer"], v["source_answer"] = v["answer"].replace(",", ""), v["source_answer"].replace(",", "")
     var = data.load(VARIANT_ROOT, V2)
     st, _, _ = vote.converge(var, rules=V2)
     var_ans = {i: s["answer"] for i, s in st.items()}
