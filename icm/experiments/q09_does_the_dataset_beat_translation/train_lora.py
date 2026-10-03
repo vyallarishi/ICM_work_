@@ -44,12 +44,16 @@ def main():
     tok = AutoTokenizer.from_pretrained(a.model_dir)
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
+    # BOS exactly as at evaluation (vLLM tokenizes prompts with the tokenizer's default
+    # special tokens): Qwen adds none, so its runs are unchanged; Mistral/Llama get their BOS.
+    bos = [tok.bos_token_id] if tok.bos_token_id is not None and \
+        tok("x")["input_ids"][:1] == [tok.bos_token_id] else []
 
     def too_long(path):
         out = set()
         for line in open(path, encoding="utf-8"):
             r = json.loads(line)
-            n = len(tok(r["prompt"], add_special_tokens=False)["input_ids"]) + \
+            n = len(bos) + len(tok(r["prompt"], add_special_tokens=False)["input_ids"]) + \
                 len(tok(r["completion"], add_special_tokens=False)["input_ids"]) + 1
             if n > a.max_len:
                 out.add(r["id"])
@@ -62,7 +66,7 @@ def main():
         if r["id"] in excluded:
             dropped += 1
             continue
-        p = tok(r["prompt"], add_special_tokens=False)["input_ids"]
+        p = bos + tok(r["prompt"], add_special_tokens=False)["input_ids"]
         c = tok(r["completion"], add_special_tokens=False)["input_ids"] + [tok.eos_token_id]
         examples.append({"input_ids": p + c, "labels": [-100] * len(p) + c})
     if rank0:
