@@ -2,6 +2,7 @@
 # Q09 step 3b (GPU, 1 x H100): evaluate the other-family student: its base model + 6 adapters
 # (translated, method, own_unlabelled x 2 seeds), same prompts, decoding and parser as step 3.
 #     STUDENT=Mistral-Nemo-Base-2407 sbatch evaluate_student.sbatch
+# Smoke test of one adapter: STUDENT=... SMOKE=1 NAMES=translated_s1 sbatch evaluate_student.sbatch
 #SBATCH --account=rrg-zhijing
 #SBATCH --job-name=q09-evaluate-student
 #SBATCH --nodes=1
@@ -26,7 +27,7 @@ export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 VLLM_WORKER_MULTIPROC_METHOD=spaw
 A=/scratch/rvyalla/multilingual-icm/results/q09/adapters_${STUDENT}
 S=${SMOKE:+_smoke}
 ADAPTERS=""
-for name in translated_s1 translated_s2 method_s1 method_s2 own_unlabelled_s1 own_unlabelled_s2; do
+for name in ${NAMES:-translated_s1 translated_s2 method_s1 method_s2 own_unlabelled_s1 own_unlabelled_s2}; do
     ADAPTERS="$ADAPTERS --adapter $name=$A/$name$S"
 done
 python -u -m icm.experiments.q09_does_the_dataset_beat_translation.evaluate $ADAPTERS \
