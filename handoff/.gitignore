@@ -1,0 +1,11 @@
+# data is rebuilt by setup/build_data.py (never committed)
+data/_downloads/
+data/gsm8k-106/
+data/all67_ablation/
+data/eval_sets/
+# outputs and logs
+results/*
+!results/.gitkeep
+experiments/*/logs/
+setup/*.out
+__pycache__/

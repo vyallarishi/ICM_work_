@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Stand-in for run_experiment.py's sys.executable: generate_chains.py runs through
+# gen_min_tokens_launch.py; anything else (pooling, views) runs on the real interpreter unchanged.
+PY="${REAL_PYTHON:?}"
+if [ "${1:-}" = scripts/generate_chains.py ]; then
+    shift
+    exec "$PY" "$BUNDLE/experiments/1_gemma_generation/min_tokens/gen_min_tokens_launch.py" "$@"
+fi
+exec "$PY" "$@"
