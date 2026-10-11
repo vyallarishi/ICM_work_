@@ -1,0 +1,6334 @@
+{
+ "sources": {
+  "qe_table": "Multilingual Math QE - Full Scores (inputs/qe_full_scores.txt)",
+  "common_crawl": "CC-MAIN-2026-39"
+ },
+ "rules": {
+  "ck_min": 0.82,
+  "mx_max": 5.5,
+  "gm_min": 90.0,
+  "tiers": "high >=1%, mid 0.1-1%, low <0.1% of CC pages",
+  "per_tier": "5 Latin + 3 other script, >=2 non-Latin script families, all MGSM languages",
+  "overall": "<=1 language per subgroup, <=2 per WALS genus",
+  "objective": "sum_k var(tier means of k)/var_k over k in ck, mx, gm; ties -> more genera, then alphabetical",
+  "sd_over_eligible": {
+   "ck": 0.014962456843186084,
+   "mx": 0.8693065325686761,
+   "gm": 1.095160371666826
+  },
+  "search": "exhaustive"
+ },
+ "excluded": {
+  "ceb": "no CometKiwi score",
+  "co": "no CometKiwi score",
+  "eo": "constructed language",
+  "et": "MetricX 5.85 > 5.5",
+  "fi": "MetricX 5.54 > 5.5",
+  "fy": "CometKiwi 0.76 < 0.82",
+  "ga": "CometKiwi 0.81 < 0.82",
+  "gd": "CometKiwi 0.74 < 0.82",
+  "ha": "CometKiwi 0.61 < 0.82",
+  "haw": "no CometKiwi score",
+  "hmn": "no CometKiwi score",
+  "ht": "no CometKiwi score",
+  "ig": "no CometKiwi score",
+  "is": "MetricX 5.55 > 5.5",
+  "jw": "CometKiwi 0.74 < 0.82",
+  "ku": "CometKiwi 0.74 < 0.82",
+  "la": "not a living language",
+  "lb": "no CometKiwi score",
+  "lv": "MetricX 6.10 > 5.5",
+  "mg": "CometKiwi 0.60 < 0.82",
+  "mi": "no CometKiwi score",
+  "mr": "CometKiwi 0.78 < 0.82",
+  "mt": "no CometKiwi score",
+  "my": "MetricX 6.04 > 5.5",
+  "ny": "no CometKiwi score",
+  "ps": "CometKiwi 0.81 < 0.82",
+  "sd": "CometKiwi 0.78 < 0.82",
+  "si": "MetricX 6.44 > 5.5",
+  "sm": "no CometKiwi score",
+  "sn": "no CometKiwi score",
+  "so": "CometKiwi 0.70 < 0.82",
+  "st": "no CometKiwi score",
+  "su": "CometKiwi 0.75 < 0.82",
+  "tg": "no CometKiwi score",
+  "ug": "CometKiwi 0.81 < 0.82",
+  "xh": "CometKiwi 0.57 < 0.82",
+  "yo": "no CometKiwi score",
+  "zh-tw": "script variant of zh-cn; Common Crawl reports one share for Chinese",
+  "zu": "CometKiwi 0.56 < 0.82"
+ },
+ "eligible_per_tier": {
+  "high": 13,
+  "mid": 22,
+  "low": 31
+ },
+ "valid_tier_sets": {
+  "high": 5,
+  "mid": 1298,
+  "low": 25606
+ },
+ "valid_full_sets": 10530,
+ "core": {
+  "score": 0.527798036,
+  "n_genera": 19,
+  "tiers": {
+   "high": {
+    "langs": [
+     {
+      "code": "de",
+      "name": "German",
+      "script": "Latin",
+      "genus": "Germanic",
+      "cc_pct": 5.7252,
+      "ck": 0.85,
+      "mx": 1.49,
+      "gm": 95.98,
+      "mgsm": true
+     },
+     {
+      "code": "es",
+      "name": "Spanish",
+      "script": "Latin",
+      "genus": "Romance",
+      "cc_pct": 4.7448,
+      "ck": 0.86,
+      "mx": 3.4,
+      "gm": 96.6,
+      "mgsm": true
+     },
+     {
+      "code": "fr",
+      "name": "French",
+      "script": "Latin",
+      "genus": "Romance",
+      "cc_pct": 4.6769,
+      "ck": 0.87,
+      "mx": 3.44,
+      "gm": 96.03,
+      "mgsm": true
+     },
+     {
+      "code": "tr",
+      "name": "Turkish",
+      "script": "Latin",
+      "genus": "Turkic",
+      "cc_pct": 1.2777,
+      "ck": 0.87,
+      "mx": 5.32,
+      "gm": 95.5,
+      "mgsm": false
+     },
+     {
+      "code": "id",
+      "name": "Indonesian",
+      "script": "Latin",
+      "genus": "Malayo-Sumbawan",
+      "cc_pct": 1.0945,
+      "ck": 0.86,
+      "mx": 3.13,
+      "gm": 95.6,
+      "mgsm": false
+     },
+     {
+      "code": "ja",
+      "name": "Japanese",
+      "script": "CJK",
+      "genus": "Japanese",
+      "cc_pct": 5.1668,
+      "ck": 0.87,
+      "mx": 3.34,
+      "gm": 94.58,
+      "mgsm": true
+     },
+     {
+      "code": "ru",
+      "name": "Russian",
+      "script": "Cyrillic",
+      "genus": "Slavic",
+      "cc_pct": 6.6954,
+      "ck": 0.85,
+      "mx": 3.32,
+      "gm": 95.96,
+      "mgsm": true
+     },
+     {
+      "code": "zh-cn",
+      "name": "Chinese (simplified)",
+      "script": "CJK",
+      "genus": "Chinese",
+      "cc_pct": 4.2255,
+      "ck": 0.84,
+      "mx": 2.96,
+      "gm": 95.2,
+      "mgsm": true
+     }
+    ],
+    "mean_ck": 0.8588,
+    "mean_mx": 3.3,
+    "mean_gm": 95.681,
+    "mean_log10_cc": 0.552
+   },
+   "mid": {
+    "langs": [
+     {
+      "code": "vi",
+      "name": "Vietnamese",
+      "script": "Latin",
+      "genus": "Viet-Muong",
+      "cc_pct": 0.9927,
+      "ck": 0.85,
+      "mx": 3.51,
+      "gm": 95.55,
+      "mgsm": false
+     },
+     {
+      "code": "hu",
+      "name": "Hungarian",
+      "script": "Latin",
+      "genus": "Ugric",
+      "cc_pct": 0.5253,
+      "ck": 0.87,
+      "mx": 4.27,
+      "gm": 95.71,
+      "mgsm": false
+     },
+     {
+      "code": "da",
+      "name": "Danish",
+      "script": "Latin",
+      "genus": "Germanic",
+      "cc_pct": 0.5233,
+      "ck": 0.86,
+      "mx": 3.11,
+      "gm": 96.71,
+      "mgsm": false
+     },
+     {
+      "code": "sk",
+      "name": "Slovak",
+      "script": "Latin",
+      "genus": "Slavic",
+      "cc_pct": 0.3951,
+      "ck": 0.86,
+      "mx": 4.8,
+      "gm": 95.9,
+      "mgsm": false
+     },
+     {
+      "code": "lt",
+      "name": "Lithuanian",
+      "script": "Latin",
+      "genus": "Baltic",
+      "cc_pct": 0.17,
+      "ck": 0.86,
+      "mx": 5.28,
+      "gm": 95.8,
+      "mgsm": false
+     },
+     {
+      "code": "th",
+      "name": "Thai",
+      "script": "Brahmic",
+      "genus": "Kam-Tai",
+      "cc_pct": 0.3577,
+      "ck": 0.83,
+      "mx": 2.99,
+      "gm": 95.21,
+      "mgsm": true
+     },
+     {
+      "code": "bn",
+      "name": "Bengali",
+      "script": "Brahmic",
+      "genus": "Indic",
+      "cc_pct": 0.11,
+      "ck": 0.87,
+      "mx": 3.57,
+      "gm": 95.21,
+      "mgsm": true
+     },
+     {
+      "code": "ko",
+      "name": "Korean",
+      "script": "Hangul",
+      "genus": "Korean",
+      "cc_pct": 0.8396,
+      "ck": 0.86,
+      "mx": 3.25,
+      "gm": 95.08,
+      "mgsm": false
+     }
+    ],
+    "mean_ck": 0.8575,
+    "mean_mx": 3.848,
+    "mean_gm": 95.646,
+    "mean_log10_cc": -0.402
+   },
+   "low": {
+    "langs": [
+     {
+      "code": "sw",
+      "name": "Swahili",
+      "script": "Latin",
+      "genus": "Bantoid",
+      "cc_pct": 0.0109,
+      "ck": 0.84,
+      "mx": 4.46,
+      "gm": 93.25,
+      "mgsm": true
+     },
+     {
+      "code": "sq",
+      "name": "Albanian",
+      "script": "Latin",
+      "genus": "Albanian",
+      "cc_pct": 0.0481,
+      "ck": 0.86,
+      "mx": 4.6,
+      "gm": 95.88,
+      "mgsm": false
+     },
+     {
+      "code": "eu",
+      "name": "Basque",
+      "script": "Latin",
+      "genus": "Basque",
+      "cc_pct": 0.0383,
+      "ck": 0.86,
+      "mx": 5.25,
+      "gm": 94.16,
+      "mgsm": false
+     },
+     {
+      "code": "uz",
+      "name": "Uzbek",
+      "script": "Latin",
+      "genus": "Turkic",
+      "cc_pct": 0.0311,
+      "ck": 0.85,
+      "mx": 4.52,
+      "gm": 95.06,
+      "mgsm": false
+     },
+     {
+      "code": "tl",
+      "name": "Filipino",
+      "script": "Latin",
+      "genus": "Greater Central Philippine",
+      "cc_pct": 0.0121,
+      "ck": 0.84,
+      "mx": 4.22,
+      "gm": 94.48,
+      "mgsm": false
+     },
+     {
+      "code": "te",
+      "name": "Telugu",
+      "script": "Brahmic",
+      "genus": "Dravidian",
+      "cc_pct": 0.0191,
+      "ck": 0.84,
+      "mx": 3.75,
+      "gm": 94.67,
+      "mgsm": true
+     },
+     {
+      "code": "hy",
+      "name": "Armenian",
+      "script": "Armenian",
+      "genus": "Armenian",
+      "cc_pct": 0.0315,
+      "ck": 0.87,
+      "mx": 4.89,
+      "gm": 94.75,
+      "mgsm": false
+     },
+     {
+      "code": "kn",
+      "name": "Kannada",
+      "script": "Brahmic",
+      "genus": "Dravidian",
+      "cc_pct": 0.0145,
+      "ck": 0.86,
+      "mx": 3.5,
+      "gm": 94.17,
+      "mgsm": false
+     }
+    ],
+    "mean_ck": 0.8525,
+    "mean_mx": 4.399,
+    "mean_gm": 94.553,
+    "mean_log10_cc": -1.648
+   }
+  }
+ },
+ "top": [
+  {
+   "rank": 1,
+   "score": 0.527798036,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 2,
+   "score": 0.52876029,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 3,
+   "score": 0.529530146,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 4,
+   "score": 0.534325207,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 5,
+   "score": 0.535472908,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 6,
+   "score": 0.535881114,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 7,
+   "score": 0.536969222,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 8,
+   "score": 0.537524427,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 9,
+   "score": 0.539367517,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 10,
+   "score": 0.539878936,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 11,
+   "score": 0.540682028,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 12,
+   "score": 0.540904327,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 13,
+   "score": 0.541069417,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 14,
+   "score": 0.541626969,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 15,
+   "score": 0.541633518,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 16,
+   "score": 0.542002465,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 17,
+   "score": 0.546067403,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 18,
+   "score": 0.546595301,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "no",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 19,
+   "score": 0.546907901,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 20,
+   "score": 0.54797084,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "no",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 21,
+   "score": 0.548478225,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "no",
+     "hr",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 22,
+   "score": 0.548537925,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 23,
+   "score": 0.548661283,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 24,
+   "score": 0.548886079,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 25,
+   "score": 0.54890752,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "hr",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 26,
+   "score": 0.549119373,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 27,
+   "score": 0.549302153,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "pa"
+    ]
+   ]
+  },
+  {
+   "rank": 28,
+   "score": 0.549394068,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 29,
+   "score": 0.550218297,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "pa"
+    ]
+   ]
+  },
+  {
+   "rank": 30,
+   "score": 0.550796951,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "pa"
+    ]
+   ]
+  },
+  {
+   "rank": 31,
+   "score": 0.551867082,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 32,
+   "score": 0.552331287,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 33,
+   "score": 0.552685758,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 34,
+   "score": 0.55466242,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "pa"
+    ]
+   ]
+  },
+  {
+   "rank": 35,
+   "score": 0.554873038,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "fa"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 36,
+   "score": 0.555618918,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "pa"
+    ]
+   ]
+  },
+  {
+   "rank": 37,
+   "score": 0.555899635,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 38,
+   "score": 0.556788899,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "sk",
+     "no",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "ne",
+     "hy"
+    ]
+   ]
+  },
+  {
+   "rank": 39,
+   "score": 0.557430489,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "no",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 40,
+   "score": 0.557957742,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 41,
+   "score": 0.559198562,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "hr",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 42,
+   "score": 0.559595757,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "no",
+     "hr",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 43,
+   "score": 0.560070439,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 44,
+   "score": 0.560239705,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "hr",
+     "lt",
+     "th",
+     "bn",
+     "ar"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 45,
+   "score": 0.560270751,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "no",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 46,
+   "score": 0.560582823,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "he"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 47,
+   "score": 0.560731783,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "sk",
+     "lt",
+     "th",
+     "bn",
+     "he"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 48,
+   "score": 0.561104105,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "hr",
+     "lt",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "kn"
+    ]
+   ]
+  },
+  {
+   "rank": 49,
+   "score": 0.561175847,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "sv",
+     "hu",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  },
+  {
+   "rank": 50,
+   "score": 0.561508082,
+   "n_genera": 19,
+   "tiers": [
+    [
+     "de",
+     "es",
+     "fr",
+     "tr",
+     "id",
+     "ja",
+     "ru",
+     "zh-cn"
+    ],
+    [
+     "vi",
+     "hu",
+     "da",
+     "lt",
+     "sl",
+     "th",
+     "bn",
+     "ko"
+    ],
+    [
+     "sw",
+     "sq",
+     "eu",
+     "uz",
+     "tl",
+     "te",
+     "hy",
+     "gu"
+    ]
+   ]
+  }
+ ],
+ "random_valid_sets": {
+  "seed": 20261009,
+  "n": 100,
+  "score_median": 0.9599,
+  "score_min": 0.5815,
+  "score_max": 1.596,
+  "sets": [
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "ky"
+     ]
+    ],
+    "score": 0.9881
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "mn"
+     ]
+    ],
+    "score": 1.0339
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "am"
+     ]
+    ],
+    "score": 1.2152
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ml",
+      "am"
+     ]
+    ],
+    "score": 1.2853
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ml",
+      "am"
+     ]
+    ],
+    "score": 1.3212
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ky"
+     ]
+    ],
+    "score": 0.9599
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ml",
+      "am"
+     ]
+    ],
+    "score": 1.3907
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "hy",
+      "pa"
+     ]
+    ],
+    "score": 0.8227
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "ur"
+     ]
+    ],
+    "score": 0.9612
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "mn",
+      "pa"
+     ]
+    ],
+    "score": 0.8696
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "mn"
+     ]
+    ],
+    "score": 0.9266
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ml",
+      "am"
+     ]
+    ],
+    "score": 0.9172
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "hy",
+      "km"
+     ]
+    ],
+    "score": 0.6936
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "kk"
+     ]
+    ],
+    "score": 0.8368
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "mn",
+      "km"
+     ]
+    ],
+    "score": 1.3013
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ka",
+      "mn"
+     ]
+    ],
+    "score": 0.7578
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "mn",
+      "am"
+     ]
+    ],
+    "score": 1.2087
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "mn"
+     ]
+    ],
+    "score": 0.953
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "mn"
+     ]
+    ],
+    "score": 0.7896
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ml"
+     ]
+    ],
+    "score": 0.9884
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "hy"
+     ]
+    ],
+    "score": 0.8077
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ta"
+     ]
+    ],
+    "score": 1.0654
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ne",
+      "hy"
+     ]
+    ],
+    "score": 0.5815
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "ml"
+     ]
+    ],
+    "score": 0.8895
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ky"
+     ]
+    ],
+    "score": 1.0075
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ur"
+     ]
+    ],
+    "score": 1.0539
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "am"
+     ]
+    ],
+    "score": 1.155
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "hy",
+      "am"
+     ]
+    ],
+    "score": 1.2844
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "ka"
+     ]
+    ],
+    "score": 0.774
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "ka"
+     ]
+    ],
+    "score": 0.794
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "am"
+     ]
+    ],
+    "score": 1.1981
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "hy",
+      "pa"
+     ]
+    ],
+    "score": 0.8588
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "km",
+      "am"
+     ]
+    ],
+    "score": 1.5042
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "am"
+     ]
+    ],
+    "score": 1.4618
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "am"
+     ]
+    ],
+    "score": 1.1991
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "mn",
+      "am"
+     ]
+    ],
+    "score": 1.396
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "hy",
+      "kn"
+     ]
+    ],
+    "score": 0.8734
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "mn"
+     ]
+    ],
+    "score": 0.9943
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "kn"
+     ]
+    ],
+    "score": 0.8189
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ka",
+      "kn"
+     ]
+    ],
+    "score": 0.6338
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "ta"
+     ]
+    ],
+    "score": 0.8889
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "hy",
+      "kn"
+     ]
+    ],
+    "score": 0.8221
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ta",
+      "kk"
+     ]
+    ],
+    "score": 0.9105
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "mn",
+      "kn"
+     ]
+    ],
+    "score": 0.8712
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ky",
+      "pa"
+     ]
+    ],
+    "score": 0.8366
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "mn",
+      "kn"
+     ]
+    ],
+    "score": 0.6671
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "pa",
+      "am"
+     ]
+    ],
+    "score": 1.1309
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "am"
+     ]
+    ],
+    "score": 1.1603
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "km",
+      "am"
+     ]
+    ],
+    "score": 1.3652
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "hy"
+     ]
+    ],
+    "score": 0.8285
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "mn",
+      "gu"
+     ]
+    ],
+    "score": 0.8705
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "gu"
+     ]
+    ],
+    "score": 0.9246
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "ml"
+     ]
+    ],
+    "score": 0.9659
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "pa"
+     ]
+    ],
+    "score": 0.8638
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ne",
+      "am"
+     ]
+    ],
+    "score": 0.8647
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "am"
+     ]
+    ],
+    "score": 1.1747
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "km"
+     ]
+    ],
+    "score": 1.034
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ta",
+      "am"
+     ]
+    ],
+    "score": 1.1654
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "hy",
+      "mn"
+     ]
+    ],
+    "score": 0.9756
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ta",
+      "ur"
+     ]
+    ],
+    "score": 1.1047
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "gu"
+     ]
+    ],
+    "score": 0.8003
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "am"
+     ]
+    ],
+    "score": 1.2552
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "mn",
+      "gu"
+     ]
+    ],
+    "score": 0.8753
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "am"
+     ]
+    ],
+    "score": 1.2943
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "hy",
+      "ur"
+     ]
+    ],
+    "score": 0.6619
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "kn"
+     ]
+    ],
+    "score": 0.8204
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "fa"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "mn"
+     ]
+    ],
+    "score": 1.1188
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "mn"
+     ]
+    ],
+    "score": 0.9951
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ka",
+      "am"
+     ]
+    ],
+    "score": 0.9524
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ml",
+      "am"
+     ]
+    ],
+    "score": 1.2169
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ka",
+      "mn"
+     ]
+    ],
+    "score": 0.7225
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ur"
+     ]
+    ],
+    "score": 1.1461
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "ne",
+      "ka"
+     ]
+    ],
+    "score": 0.593
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "mn"
+     ]
+    ],
+    "score": 1.1878
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "km"
+     ]
+    ],
+    "score": 1.0148
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ne",
+      "mn"
+     ]
+    ],
+    "score": 0.8542
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "hy"
+     ]
+    ],
+    "score": 0.8764
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kk",
+      "gu"
+     ]
+    ],
+    "score": 0.7939
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "pa",
+      "am"
+     ]
+    ],
+    "score": 0.9225
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "km",
+      "am"
+     ]
+    ],
+    "score": 1.0724
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "mn",
+      "gu"
+     ]
+    ],
+    "score": 0.8403
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "mn",
+      "km"
+     ]
+    ],
+    "score": 1.2031
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "kn",
+      "ky"
+     ]
+    ],
+    "score": 0.8554
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "am"
+     ]
+    ],
+    "score": 1.1466
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "he"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "mn"
+     ]
+    ],
+    "score": 1.022
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "ml"
+     ]
+    ],
+    "score": 0.8858
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ta",
+      "am"
+     ]
+    ],
+    "score": 1.2213
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "km"
+     ]
+    ],
+    "score": 1.0456
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ka",
+      "km"
+     ]
+    ],
+    "score": 1.1012
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "no",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "kn"
+     ]
+    ],
+    "score": 0.8188
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ne",
+      "ka"
+     ]
+    ],
+    "score": 0.7942
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "kn",
+      "am"
+     ]
+    ],
+    "score": 1.0705
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "kn"
+     ]
+    ],
+    "score": 0.7927
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ka",
+      "ta"
+     ]
+    ],
+    "score": 0.9086
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "sk",
+      "lt",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "kn"
+     ]
+    ],
+    "score": 0.8891
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "sk",
+      "no",
+      "lt",
+      "th",
+      "bn",
+      "ko"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "cy",
+      "te",
+      "ur",
+      "ml"
+     ]
+    ],
+    "score": 0.8501
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "km",
+      "am"
+     ]
+    ],
+    "score": 1.596
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "eu",
+      "uz",
+      "tl",
+      "cy",
+      "te",
+      "hy",
+      "ml"
+     ]
+    ],
+    "score": 0.9612
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "hu",
+      "da",
+      "hr",
+      "lt",
+      "th",
+      "bn",
+      "el"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "tl",
+      "cy",
+      "te",
+      "ur",
+      "ky"
+     ]
+    ],
+    "score": 1.0051
+   },
+   {
+    "tiers": [
+     [
+      "de",
+      "es",
+      "fr",
+      "tr",
+      "id",
+      "ja",
+      "ru",
+      "zh-cn"
+     ],
+     [
+      "vi",
+      "sv",
+      "hu",
+      "lt",
+      "sl",
+      "th",
+      "bn",
+      "ar"
+     ],
+     [
+      "sw",
+      "sq",
+      "eu",
+      "uz",
+      "tl",
+      "te",
+      "mn",
+      "kn"
+     ]
+    ],
+    "score": 0.6251
+   }
+  ]
+ },
+ "extension": {
+  "n": 66,
+  "per_tier": {
+   "high": [
+    {
+     "code": "ru",
+     "name": "Russian",
+     "cc_pct": 6.6954,
+     "ck": 0.85,
+     "mx": 3.32,
+     "gm": 95.96,
+     "genus": "Slavic"
+    },
+    {
+     "code": "de",
+     "name": "German",
+     "cc_pct": 5.7252,
+     "ck": 0.85,
+     "mx": 1.49,
+     "gm": 95.98,
+     "genus": "Germanic"
+    },
+    {
+     "code": "ja",
+     "name": "Japanese",
+     "cc_pct": 5.1668,
+     "ck": 0.87,
+     "mx": 3.34,
+     "gm": 94.58,
+     "genus": "Japanese"
+    },
+    {
+     "code": "es",
+     "name": "Spanish",
+     "cc_pct": 4.7448,
+     "ck": 0.86,
+     "mx": 3.4,
+     "gm": 96.6,
+     "genus": "Romance"
+    },
+    {
+     "code": "fr",
+     "name": "French",
+     "cc_pct": 4.6769,
+     "ck": 0.87,
+     "mx": 3.44,
+     "gm": 96.03,
+     "genus": "Romance"
+    },
+    {
+     "code": "zh-cn",
+     "name": "Chinese (simplified)",
+     "cc_pct": 4.2255,
+     "ck": 0.84,
+     "mx": 2.96,
+     "gm": 95.2,
+     "genus": "Chinese"
+    },
+    {
+     "code": "pt",
+     "name": "Portuguese",
+     "cc_pct": 2.4899,
+     "ck": 0.85,
+     "mx": 3.66,
+     "gm": 96.71,
+     "genus": "Romance"
+    },
+    {
+     "code": "it",
+     "name": "Italian",
+     "cc_pct": 2.4622,
+     "ck": 0.87,
+     "mx": 3.41,
+     "gm": 96.24,
+     "genus": "Romance"
+    },
+    {
+     "code": "pl",
+     "name": "Polish",
+     "cc_pct": 2.0329,
+     "ck": 0.84,
+     "mx": 4.27,
+     "gm": 96.16,
+     "genus": "Slavic"
+    },
+    {
+     "code": "nl",
+     "name": "Dutch",
+     "cc_pct": 1.7381,
+     "ck": 0.87,
+     "mx": 2.3,
+     "gm": 96.42,
+     "genus": "Germanic"
+    },
+    {
+     "code": "tr",
+     "name": "Turkish",
+     "cc_pct": 1.2777,
+     "ck": 0.87,
+     "mx": 5.32,
+     "gm": 95.5,
+     "genus": "Turkic"
+    },
+    {
+     "code": "cs",
+     "name": "Czech",
+     "cc_pct": 1.1277,
+     "ck": 0.86,
+     "mx": 4.6,
+     "gm": 96.13,
+     "genus": "Slavic"
+    },
+    {
+     "code": "id",
+     "name": "Indonesian",
+     "cc_pct": 1.0945,
+     "ck": 0.86,
+     "mx": 3.13,
+     "gm": 95.6,
+     "genus": "Malayo-Sumbawan"
+    }
+   ],
+   "mid": [
+    {
+     "code": "vi",
+     "name": "Vietnamese",
+     "cc_pct": 0.9927,
+     "ck": 0.85,
+     "mx": 3.51,
+     "gm": 95.55,
+     "genus": "Viet-Muong"
+    },
+    {
+     "code": "ko",
+     "name": "Korean",
+     "cc_pct": 0.8396,
+     "ck": 0.86,
+     "mx": 3.25,
+     "gm": 95.08,
+     "genus": "Korean"
+    },
+    {
+     "code": "uk",
+     "name": "Ukrainian",
+     "cc_pct": 0.8138,
+     "ck": 0.85,
+     "mx": 3.55,
+     "gm": 95.74,
+     "genus": "Slavic"
+    },
+    {
+     "code": "sv",
+     "name": "Swedish",
+     "cc_pct": 0.7196,
+     "ck": 0.87,
+     "mx": 3.18,
+     "gm": 96.49,
+     "genus": "Germanic"
+    },
+    {
+     "code": "fa",
+     "name": "Persian",
+     "cc_pct": 0.6934,
+     "ck": 0.86,
+     "mx": 3.07,
+     "gm": 95.57,
+     "genus": "Iranian"
+    },
+    {
+     "code": "ar",
+     "name": "Arabic",
+     "cc_pct": 0.6679,
+     "ck": 0.82,
+     "mx": 3.66,
+     "gm": 95.52,
+     "genus": "Semitic"
+    },
+    {
+     "code": "ro",
+     "name": "Romanian",
+     "cc_pct": 0.573,
+     "ck": 0.87,
+     "mx": 4.18,
+     "gm": 96.4,
+     "genus": "Romance"
+    },
+    {
+     "code": "hu",
+     "name": "Hungarian",
+     "cc_pct": 0.5253,
+     "ck": 0.87,
+     "mx": 4.27,
+     "gm": 95.71,
+     "genus": "Ugric"
+    },
+    {
+     "code": "da",
+     "name": "Danish",
+     "cc_pct": 0.5233,
+     "ck": 0.86,
+     "mx": 3.11,
+     "gm": 96.71,
+     "genus": "Germanic"
+    },
+    {
+     "code": "el",
+     "name": "Greek",
+     "cc_pct": 0.519,
+     "ck": 0.85,
+     "mx": 4.08,
+     "gm": 96.53,
+     "genus": "Greek"
+    },
+    {
+     "code": "sk",
+     "name": "Slovak",
+     "cc_pct": 0.3951,
+     "ck": 0.86,
+     "mx": 4.8,
+     "gm": 95.9,
+     "genus": "Slavic"
+    },
+    {
+     "code": "th",
+     "name": "Thai",
+     "cc_pct": 0.3577,
+     "ck": 0.83,
+     "mx": 2.99,
+     "gm": 95.21,
+     "genus": "Kam-Tai"
+    },
+    {
+     "code": "no",
+     "name": "Norwegian",
+     "cc_pct": 0.3358,
+     "ck": 0.87,
+     "mx": 3.26,
+     "gm": 96.52,
+     "genus": "Germanic"
+    },
+    {
+     "code": "bg",
+     "name": "Bulgarian",
+     "cc_pct": 0.3119,
+     "ck": 0.87,
+     "mx": 3.65,
+     "gm": 96.4,
+     "genus": "Slavic"
+    },
+    {
+     "code": "sr",
+     "name": "Serbian",
+     "cc_pct": 0.2577,
+     "ck": 0.87,
+     "mx": 2.65,
+     "gm": 95.86,
+     "genus": "Slavic"
+    },
+    {
+     "code": "he",
+     "name": "Hebrew",
+     "cc_pct": 0.2567,
+     "ck": 0.86,
+     "mx": 3.78,
+     "gm": 96.22,
+     "genus": "Semitic"
+    },
+    {
+     "code": "hi",
+     "name": "Hindi",
+     "cc_pct": 0.2147,
+     "ck": 0.85,
+     "mx": 3.79,
+     "gm": 94.72,
+     "genus": "Indic"
+    },
+    {
+     "code": "hr",
+     "name": "Croatian",
+     "cc_pct": 0.2124,
+     "ck": 0.87,
+     "mx": 2.61,
+     "gm": 96.09,
+     "genus": "Slavic"
+    },
+    {
+     "code": "ca",
+     "name": "Catalan",
+     "cc_pct": 0.1976,
+     "ck": 0.85,
+     "mx": 4.52,
+     "gm": 96.07,
+     "genus": "Romance"
+    },
+    {
+     "code": "lt",
+     "name": "Lithuanian",
+     "cc_pct": 0.17,
+     "ck": 0.86,
+     "mx": 5.28,
+     "gm": 95.8,
+     "genus": "Baltic"
+    },
+    {
+     "code": "sl",
+     "name": "Slovenian",
+     "cc_pct": 0.1523,
+     "ck": 0.86,
+     "mx": 2.79,
+     "gm": 96.0,
+     "genus": "Slavic"
+    },
+    {
+     "code": "bn",
+     "name": "Bengali",
+     "cc_pct": 0.11,
+     "ck": 0.87,
+     "mx": 3.57,
+     "gm": 95.21,
+     "genus": "Indic"
+    }
+   ],
+   "low": [
+    {
+     "code": "ms",
+     "name": "Malay",
+     "cc_pct": 0.0855,
+     "ck": 0.85,
+     "mx": 3.47,
+     "gm": 95.31,
+     "genus": "Malayo-Sumbawan"
+    },
+    {
+     "code": "az",
+     "name": "Azerbaijani",
+     "cc_pct": 0.0609,
+     "ck": 0.87,
+     "mx": 5.43,
+     "gm": 94.92,
+     "genus": "Turkic"
+    },
+    {
+     "code": "bs",
+     "name": "Bosnian",
+     "cc_pct": 0.0578,
+     "ck": 0.87,
+     "mx": 2.59,
+     "gm": 95.94,
+     "genus": "Slavic"
+    },
+    {
+     "code": "ne",
+     "name": "Nepali",
+     "cc_pct": 0.0534,
+     "ck": 0.88,
+     "mx": 4.17,
+     "gm": 94.31,
+     "genus": "Indic"
+    },
+    {
+     "code": "sq",
+     "name": "Albanian",
+     "cc_pct": 0.0481,
+     "ck": 0.86,
+     "mx": 4.6,
+     "gm": 95.88,
+     "genus": "Albanian"
+    },
+    {
+     "code": "ka",
+     "name": "Georgian",
+     "cc_pct": 0.0457,
+     "ck": 0.85,
+     "mx": 5.19,
+     "gm": 94.57,
+     "genus": "Kartvelian"
+    },
+    {
+     "code": "ta",
+     "name": "Tamil",
+     "cc_pct": 0.0449,
+     "ck": 0.85,
+     "mx": 3.91,
+     "gm": 93.83,
+     "genus": "Dravidian"
+    },
+    {
+     "code": "kk",
+     "name": "Kazakh",
+     "cc_pct": 0.0428,
+     "ck": 0.87,
+     "mx": 4.9,
+     "gm": 94.68,
+     "genus": "Turkic"
+    },
+    {
+     "code": "mk",
+     "name": "Macedonian",
+     "cc_pct": 0.0394,
+     "ck": 0.87,
+     "mx": 3.33,
+     "gm": 96.1,
+     "genus": "Slavic"
+    },
+    {
+     "code": "eu",
+     "name": "Basque",
+     "cc_pct": 0.0383,
+     "ck": 0.86,
+     "mx": 5.25,
+     "gm": 94.16,
+     "genus": "Basque"
+    },
+    {
+     "code": "gl",
+     "name": "Galician",
+     "cc_pct": 0.0315,
+     "ck": 0.85,
+     "mx": 4.21,
+     "gm": 95.32,
+     "genus": "Romance"
+    },
+    {
+     "code": "hy",
+     "name": "Armenian",
+     "cc_pct": 0.0315,
+     "ck": 0.87,
+     "mx": 4.89,
+     "gm": 94.75,
+     "genus": "Armenian"
+    },
+    {
+     "code": "uz",
+     "name": "Uzbek",
+     "cc_pct": 0.0311,
+     "ck": 0.85,
+     "mx": 4.52,
+     "gm": 95.06,
+     "genus": "Turkic"
+    },
+    {
+     "code": "ur",
+     "name": "Urdu",
+     "cc_pct": 0.0308,
+     "ck": 0.82,
+     "mx": 3.76,
+     "gm": 94.63,
+     "genus": "Indic"
+    },
+    {
+     "code": "ml",
+     "name": "Malayalam",
+     "cc_pct": 0.022,
+     "ck": 0.85,
+     "mx": 3.94,
+     "gm": 94.16,
+     "genus": "Dravidian"
+    },
+    {
+     "code": "te",
+     "name": "Telugu",
+     "cc_pct": 0.0191,
+     "ck": 0.84,
+     "mx": 3.75,
+     "gm": 94.67,
+     "genus": "Dravidian"
+    },
+    {
+     "code": "be",
+     "name": "Belarusian",
+     "cc_pct": 0.0168,
+     "ck": 0.83,
+     "mx": 4.35,
+     "gm": 95.43,
+     "genus": "Slavic"
+    },
+    {
+     "code": "mn",
+     "name": "Mongolian",
+     "cc_pct": 0.0159,
+     "ck": 0.84,
+     "mx": 4.83,
+     "gm": 94.01,
+     "genus": "Mongolic"
+    },
+    {
+     "code": "kn",
+     "name": "Kannada",
+     "cc_pct": 0.0145,
+     "ck": 0.86,
+     "mx": 3.5,
+     "gm": 94.17,
+     "genus": "Dravidian"
+    },
+    {
+     "code": "tl",
+     "name": "Filipino",
+     "cc_pct": 0.0121,
+     "ck": 0.84,
+     "mx": 4.22,
+     "gm": 94.48,
+     "genus": "Greater Central Philippine"
+    },
+    {
+     "code": "gu",
+     "name": "Gujarati",
+     "cc_pct": 0.012,
+     "ck": 0.86,
+     "mx": 3.98,
+     "gm": 94.61,
+     "genus": "Indic"
+    },
+    {
+     "code": "cy",
+     "name": "Welsh",
+     "cc_pct": 0.0116,
+     "ck": 0.83,
+     "mx": 5.45,
+     "gm": 92.79,
+     "genus": "Celtic"
+    },
+    {
+     "code": "sw",
+     "name": "Swahili",
+     "cc_pct": 0.0109,
+     "ck": 0.84,
+     "mx": 4.46,
+     "gm": 93.25,
+     "genus": "Bantoid"
+    },
+    {
+     "code": "km",
+     "name": "Khmer",
+     "cc_pct": 0.0107,
+     "ck": 0.84,
+     "mx": 4.23,
+     "gm": 92.61,
+     "genus": "Khmer"
+    },
+    {
+     "code": "ky",
+     "name": "Kyrgyz",
+     "cc_pct": 0.0099,
+     "ck": 0.86,
+     "mx": 5.19,
+     "gm": 94.37,
+     "genus": "Turkic"
+    },
+    {
+     "code": "pa",
+     "name": "Punjabi",
+     "cc_pct": 0.0091,
+     "ck": 0.86,
+     "mx": 3.98,
+     "gm": 94.34,
+     "genus": "Indic"
+    },
+    {
+     "code": "af",
+     "name": "Afrikaans",
+     "cc_pct": 0.0079,
+     "ck": 0.83,
+     "mx": 3.16,
+     "gm": 95.71,
+     "genus": "Germanic"
+    },
+    {
+     "code": "or",
+     "name": "Odia",
+     "cc_pct": 0.0066,
+     "ck": 0.84,
+     "mx": 5.5,
+     "gm": 93.57,
+     "genus": "Indic"
+    },
+    {
+     "code": "lo",
+     "name": "Lao",
+     "cc_pct": 0.0055,
+     "ck": 0.82,
+     "mx": 4.53,
+     "gm": 93.94,
+     "genus": "Kam-Tai"
+    },
+    {
+     "code": "am",
+     "name": "Amharic",
+     "cc_pct": 0.0046,
+     "ck": 0.84,
+     "mx": 5.12,
+     "gm": 91.16,
+     "genus": "Semitic"
+    },
+    {
+     "code": "yi",
+     "name": "Yiddish",
+     "cc_pct": 0.0017,
+     "ck": 0.82,
+     "mx": 5.42,
+     "gm": 93.85,
+     "genus": "Germanic"
+    }
+   ]
+  }
+ },
+ "runtime_s": 2.6
+}

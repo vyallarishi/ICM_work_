@@ -1,0 +1,31 @@
+{
+  "candidate_views": [
+    "all_usable"
+  ],
+  "defaults": {
+    "model": "Qwen/Qwen3-8B-Base",
+    "dataset": "open-multilang/gsm8k-106",
+    "split": "train",
+    "dtype": "bfloat16",
+    "tensor_parallel_size": 1,
+    "gpu_memory_utilization": 0.92,
+    "max_model_len": 4096,
+    "max_new_tokens": 512,
+    "batch_size": 64,
+    "max_num_seqs": 512,
+    "max_num_batched_tokens": 32768,
+    "enable_prefix_caching": true,
+    "tolerance": "0",
+    "candidate_source": "wrong_chain_ablation"
+  },
+  "regimes": [
+    {
+      "name": "wrong_chain_plausible",
+      "prompt_template": "wrong_cot",
+      "temperature": 0.8,
+      "top_p": 0.95,
+      "n": 4,
+      "seed": 9001
+    }
+  ]
+}

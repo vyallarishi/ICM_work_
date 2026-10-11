@@ -1,0 +1,7 @@
+# Environment 2: LoRA training (experiment 2). Python 3.11.
+# Exact versions of the original runs; full list in full_freeze_train_env.txt.
+torch==2.13.0
+transformers==4.57.6
+peft==0.19.1
+accelerate==1.14.0
+safetensors==0.8.0
