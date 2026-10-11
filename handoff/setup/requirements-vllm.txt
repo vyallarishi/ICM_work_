@@ -1,0 +1,8 @@
+# Environment 1: generation (experiment 1) and evaluation (experiment 2). Python 3.11.
+# These are the exact versions the original runs used; full list in full_freeze_vllm_env.txt.
+vllm==0.25.1
+torch==2.11.0
+transformers==5.14.1
+datasets==5.0.0
+numpy==2.3.5
+rich==15.0.0

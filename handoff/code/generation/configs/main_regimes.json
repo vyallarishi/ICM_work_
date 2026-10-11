@@ -1,0 +1,53 @@
+{
+  "candidate_views": [
+    "all_usable",
+    "random_4",
+    "diverse_4"
+  ],
+  "defaults": {
+    "model": "Qwen/Qwen3-8B-Base",
+    "dataset": "open-multilang/gsm8k-106",
+    "split": "train",
+    "dtype": "bfloat16",
+    "tensor_parallel_size": 1,
+    "gpu_memory_utilization": 0.92,
+    "max_model_len": 4096,
+    "max_new_tokens": 512,
+    "batch_size": 64,
+    "max_num_seqs": 512,
+    "max_num_batched_tokens": 32768,
+    "enable_prefix_caching": true,
+    "few_shot_split": "test",
+    "tolerance": "0",
+    "candidate_source": "main"
+  },
+  "regimes": [
+    {
+      "name": "target_low_temp",
+      "prompt_template": "few_shot_cot",
+      "few_shot_count": 6,
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "n": 8,
+      "seed": 101
+    },
+    {
+      "name": "target_mid_temp",
+      "prompt_template": "few_shot_cot",
+      "few_shot_count": 6,
+      "temperature": 0.7,
+      "top_p": 0.95,
+      "n": 8,
+      "seed": 202
+    },
+    {
+      "name": "target_high_temp",
+      "prompt_template": "few_shot_cot",
+      "few_shot_count": 6,
+      "temperature": 1.0,
+      "top_p": 0.98,
+      "n": 4,
+      "seed": 303
+    }
+  ]
+}

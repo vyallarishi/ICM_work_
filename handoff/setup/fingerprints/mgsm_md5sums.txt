@@ -1,0 +1,11 @@
+07324289e6709e5255fbad7ca5672b2a  mgsm_bn.tsv
+acc4728132a88f279f484859c369942e  mgsm_de.tsv
+cf83c5d51dc7596f46dde47f2e3c07fb  mgsm_en.tsv
+3bb73b8133ad3e768713fc6ef70815ee  mgsm_es.tsv
+7305028435673f53249f1294a04e67eb  mgsm_fr.tsv
+05e9d405f36c2a81c9fd470fe7fa75f1  mgsm_ja.tsv
+836e0c107aaac5e441f0be079b6c19fe  mgsm_ru.tsv
+7446ea46a0dd92efc2320c4e38b72e84  mgsm_sw.tsv
+8646836b91c5a4d3e13a973ffb78b559  mgsm_te.tsv
+375e9234d612d2464e520bc6dfd33faf  mgsm_th.tsv
+4d484d68b6bbcab37ce7c15e846ae328  mgsm_zh.tsv
