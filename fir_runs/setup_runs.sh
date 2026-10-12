@@ -10,7 +10,8 @@ F=$HOME/multilingual_icm/data/findings; S=/scratch/$USER/multilingual-icm
 module load python/3.11 cuda arrow
 VV=${PROJECT:-$HOME}/venvs/multilingual-icm; VT=${PROJECT:-$HOME}/venvs/sm-icm
 [ -x $VV/bin/hf ] || { echo "run fir_labelling/setup_fir.sh first"; exit 1; }
-HF_HOME=/scratch/$USER/cache/hf $VV/bin/hf auth whoami >/dev/null 2>&1 || { echo "NOT LOGGED IN to Hugging Face: run  HF_HOME=/scratch/$USER/cache/hf $VV/bin/hf auth login  (token from huggingface.co/settings/tokens)"; exit 1; }
+export HF_HOME=/scratch/$USER/cache/hf
+$VV/bin/hf auth whoami >/dev/null 2>&1 || { echo "NOT LOGGED IN to Hugging Face. Run:  HF_HOME=/scratch/$USER/cache/hf $VV/bin/hf auth login   (token from huggingface.co/settings/tokens)"; exit 1; }
 mkdir -p $F/jobs $F/results $F/logs $HOME/multilingual_icm/data/ICM_work_/runs /scratch/$USER/cache/{vllm,triton,xdg,hf} $S/assets/models
 cp $H/jobs/* $F/jobs/
 # 1. training environment (the versions of every training run so far)

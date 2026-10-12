@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Fir: all remaining core-24 trainings (15, 2 GPUs each) and their evaluations (4 jobs, 1 GPU each), on the
+# Fir: all remaining core-24 trainings (14, 2 GPUs each) and their evaluations (4 jobs, 1 GPU each), on the
 # Rorqual job scripts unchanged (copied to ~/multilingual_icm/data/findings/jobs by setup_runs.sh).
 #   bash submit_runs.sh            dry run: sbatch --test-only for each job type, nothing submitted
-#   SUBMIT=1 bash submit_runs.sh   submit: prepare -> 15 trainings -> 4 evaluations (dependencies wired)
+#   SUBMIT=1 bash submit_runs.sh   submit: prepare -> 14 trainings -> 4 evaluations (dependencies wired)
 # Resources fit Fir's nodes via: ACCOUNT (def-zhijing) GPU_TYPE (h100) TRAIN_CPUS (16) TRAIN_MEM (128G)
 # EVAL_CPUS (12) EVAL_MEM (120G). These never change results (the recipe is fixed inside the job scripts).
 set -euo pipefail
