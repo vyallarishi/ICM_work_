@@ -46,3 +46,21 @@ The adapters stay on Fir.
 ## Not here
 
 - The Qwen wave-2 and Mistral wave-2 (own_unlabelled s1/s2, gold_filtered s1) evaluations run on Rorqual, where those adapters are.
+
+## Models are pinned
+
+`setup_runs.sh` downloads each model at the exact Hugging Face revision Rorqual used:
+
+| Model | Revision |
+|---|---|
+| Qwen | 0b0bd37 |
+| Mistral | a4477a2 |
+| Gemma | 295efb6 |
+
+The prepare job then checks every weight, config and tokenizer file against Rorqual's checksums.
+
+## Checks while it runs
+
+- **Each training log:** `[train] 2 GPU(s), grad-accum 4, effective batch 32`, plus the `examples, N dropped` line.
+- **Each evaluation log:** `Using FlashAttention version 3`.
+- **After the first evaluation:** `python fir_runs/check_stack.py`. Each cluster's base-model accuracy must equal Rorqual's within 0.5 points per language.

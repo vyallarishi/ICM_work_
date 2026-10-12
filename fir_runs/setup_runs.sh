@@ -33,8 +33,11 @@ zstd -dc $T/runs_core24.tar.zst | tar -C $F -xf -
 ( cd $F/runs_core24 && sha256sum -c --quiet $T/runs_core24.sha256 ) && echo "training/test files: 7 verified"
 # 3. models (checked against Rorqual's checksums by the prepare job)
 for st in $STUDENTS; do
-    case $st in Qwen3-14B-Base) m=Qwen/Qwen3-14B-Base;; Mistral-Nemo-Base-2407) m=mistralai/Mistral-Nemo-Base-2407;;
-                gemma-3-12b-pt-text) m=google/gemma-3-12b-pt;; *) echo "unknown student $st"; exit 1;; esac
-    [ -f $S/assets/models/${m#*/}/config.json ] || $VV/bin/hf download $m --local-dir $S/assets/models/${m#*/}
+    # pinned to the exact revisions Rorqual downloaded (from its download records), so files match byte for byte
+    case $st in Qwen3-14B-Base) m=Qwen/Qwen3-14B-Base; r=0b0bd3732e2c374d483664439ea334928b65f304;;
+                Mistral-Nemo-Base-2407) m=mistralai/Mistral-Nemo-Base-2407; r=a4477a2f977929a969745b69bbd62e03043551a5;;
+                gemma-3-12b-pt-text) m=google/gemma-3-12b-pt; r=295efb63d01a7017928f273a94ebb86105c9526f;;
+                *) echo "unknown student $st"; exit 1;; esac
+    [ -f $S/assets/models/${m#*/}/config.json ] || $VV/bin/hf download $m --revision $r --local-dir $S/assets/models/${m#*/}
 done
 echo "setup done; next: STUDENTS=\"$STUDENTS\" bash $H/submit_runs.sh (dry run)"
