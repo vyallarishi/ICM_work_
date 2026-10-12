@@ -4,11 +4,7 @@ Runs the project's labelling method (unchanged) on all 67 languages of the Qwen3
 
 ## Steps
 
-1. **Copy** `/scratch/rvyalla/fir_transfer/` from Rorqual to the same path on Fir. Run this on a Fir terminal; it asks for your password and MFA:
-   ```
-   rsync -a --info=progress2 rvyalla@rorqual.alliancecan.ca:/scratch/rvyalla/fir_transfer /scratch/rvyalla/
-   ```
-   The folder holds the compressed record plus checksums for the record and the model.
+1. **Data:** nothing to copy. The compressed Qwen record ships with this branch in `transfer/` (7 parts under 100 MB, plus checksums), and `setup_fir.sh` rebuilds and verifies it.
 2. **Clone** this branch to the exact path:
    ```
    git clone -b fir-labelling https://github.com/vyallarishi/ICM_work_.git ~/multilingual_icm/ICM_work_
