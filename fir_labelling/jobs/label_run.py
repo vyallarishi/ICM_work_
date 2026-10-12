@@ -68,6 +68,9 @@ def main():
     ap.add_argument("cmd", choices=["snapshot", "gen", "decide"])
     ap.add_argument("--set", required=True, choices=["core25", "all67"])
     ap.add_argument("--model-dir")
+    ap.add_argument("--max-model-len", type=int, default=None,
+                    help="regeneration context window; default = the method's MAX_MODEL_LEN (4096). Capacity only: "
+                         "prompts are unchanged, but long-script languages in the 67-language set need more")
     a = ap.parse_args()
     if a.cmd == "snapshot":
         return snapshot(a.set)
@@ -80,6 +83,10 @@ def main():
     print(f"{len(pools)} pools over {len(found)} languages ({a.set})", flush=True)
 
     if a.cmd == "gen":
+        import icm.method.regenerate as rg
+        if a.max_model_len:
+            print(f"regeneration context window: {rg.MAX_MODEL_LEN} -> {a.max_model_len} tokens", flush=True)
+            rg.MAX_MODEL_LEN = a.max_model_len
         state, contested, oscillators = converge(pools, rules=RECORD)
         jobs = build_jobs(pools, state, contested, RECORD)
         abstained = sum(state[i]["answer"] is None for i in contested)

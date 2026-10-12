@@ -23,5 +23,5 @@ export VLLM_CACHE_ROOT=$SLURM_TMPDIR/vllm TRITON_CACHE_DIR=$SLURM_TMPDIR/triton 
 source "${PROJECT_STORAGE}/venvs/multilingual-icm/bin/activate"
 echo "pre-registration on record: $(sha256sum "$J/PREREG_4_languages.md")"; date
 rsync -a /scratch/rvyalla/multilingual-icm/assets/models/Qwen3-14B-Base/ "$SLURM_TMPDIR/model/"; date
-python -u "$J/label_run.py" gen --set "$SET" --model-dir "$SLURM_TMPDIR/model"
+python -u "$J/label_run.py" gen --set "$SET" --model-dir "$SLURM_TMPDIR/model" ${MAX_MODEL_LEN:+--max-model-len $MAX_MODEL_LEN}
 date; echo DONE

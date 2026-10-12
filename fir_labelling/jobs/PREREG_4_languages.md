@@ -108,3 +108,8 @@ Used only for the pool-level pipeline: generation, voting, shared/local classifi
 - **Already done on 4 GPUs:** wave 1; Qwen wave 2; Mistral own_unlabelled s1/s2 and gold_filtered s1.
 - **Accounts:** Mistral wave 3 runs on the def-zhijing GPU account (advisor's request); everything else on rrg-zhijing.
 - **Reported:** the GPU layout of every run, in the appendix. Seed-to-seed spread is the yardstick for any layout effect.
+
+## Amendment 6 (2026-10-12, implementation only): regeneration context window for the 67-language labels
+- **Problem:** with all 67 languages, some regeneration prompts exceed the method's 4,096-token window. The question, two format examples and three peer solutions are chosen under a *character* cap, and long-script languages such as Odia tokenise into many more tokens. The core-25 run never hit this.
+- **Fix:** the all-67 regeneration runs with a 16,384-token window. Prompts, peers, sampling and the decision rule are unchanged.
+- **Core-25 labels:** unaffected; all their prompts fit in 4,096.
