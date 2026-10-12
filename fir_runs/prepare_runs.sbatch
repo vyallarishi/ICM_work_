@@ -11,7 +11,10 @@
 set -Eeuo pipefail
 module load python/3.11
 M=/scratch/$USER/multilingual-icm/assets/models; T=/scratch/$USER/fir_runs
-( cd $M/Mistral-Nemo-Base-2407 && sha256sum -c --quiet $T/model_Mistral-Nemo-Base-2407.sha256 ) && echo "Mistral: identical to Rorqual's"
+STUDENTS="${STUDENTS:-Qwen3-14B-Base Mistral-Nemo-Base-2407 gemma-3-12b-pt-text}"
+case " $STUDENTS " in *" Qwen3-14B-Base "*) ( cd $M/Qwen3-14B-Base && sha256sum -c --quiet $T/model_Qwen3-14B-Base.sha256 ) && echo "Qwen: identical to Rorqual's";; esac
+case " $STUDENTS " in *" Mistral-Nemo-Base-2407 "*) ( cd $M/Mistral-Nemo-Base-2407 && sha256sum -c --quiet $T/model_Mistral-Nemo-Base-2407.sha256 ) && echo "Mistral: identical to Rorqual's";; esac
+case " $STUDENTS " in *" gemma-3-12b-pt-text "*) ;; *) date; echo DONE; exit 0;; esac
 ( cd $M/gemma-3-12b-pt && sha256sum -c --quiet $T/model_gemma-3-12b-pt.sha256 ) && echo "gemma-3-12b-pt: identical to Rorqual's"
 source ${PROJECT:-$HOME}/venvs/sm-icm/bin/activate
 export PYTHONPATH=$HOME/multilingual_icm/ICM_work_ TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1

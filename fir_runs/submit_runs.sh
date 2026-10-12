@@ -6,6 +6,8 @@
 # Resources fit Fir's nodes via: ACCOUNT (def-zhijing) GPU_TYPE (h100) TRAIN_CPUS (16) TRAIN_MEM (128G)
 # EVAL_CPUS (12) EVAL_MEM (120G). These never change results (the recipe is fixed inside the job scripts).
 set -euo pipefail
+STUDENTS="${STUDENTS:-Qwen3-14B-Base Mistral-Nemo-Base-2407 gemma-3-12b-pt-text}"; export STUDENTS; echo "students on this cluster: $STUDENTS"
+has() { case " $STUDENTS " in *" $1 "*) return 0;; *) return 1;; esac; }
 ACC=${ACCOUNT:-def-zhijing}; GPU=${GPU_TYPE:-h100}
 H=$(cd "$(dirname "$0")" && pwd); J=$HOME/multilingual_icm/data/findings/jobs
 TR=(--account=$ACC --gpus-per-node=$GPU:2 --cpus-per-task=${TRAIN_CPUS:-16} --mem=${TRAIN_MEM:-128G} --time=12:00:00)
@@ -20,12 +22,18 @@ fi
 P=$(sbatch --parsable --account=$ACC $H/prepare_runs.sbatch); echo "prepare $P"
 train() { STUDENT=$1 ARM=$2 SEED=$3 NGPU=2 sbatch --parsable --dependency=afterok:$P "${TR[@]}" $J/core24_train.sbatch; }
 evaluate() { STUDENT=$1 ADAPTERS="$2" TAG=$3 sbatch --parsable --dependency=afterok$4 "${EV[@]}" $J/core24_eval.sbatch; }
+if has $M; then
 d=""; for a in "gold_filtered 2" "method 1" "method 2" "method_lenmatch 1"; do set -- $a; i=$(train $M $1 $2); d="$d:$i"; echo "train $M $1 s$2  $i"; done
 echo "eval  $M  $(evaluate $M "gold_filtered_s2 method_s1 method_s2 method_lenmatch_s1" fir $d)"
+fi
+if has $Q; then
 d=""; for a in "method 1" "method 2" "method_lenmatch 1"; do set -- $a; i=$(train $Q $1 $2); d="$d:$i"; echo "train $Q $1 s$2  $i"; done
 echo "eval  $Q  $(evaluate $Q "method_s1 method_s2 method_lenmatch_s1" wave3 $d)"
+fi
+if has $G; then
 d=""; for a in "own_unlabelled 1" "own_unlabelled 2" "gold_filtered 1" "gold_filtered 2"; do set -- $a; i=$(train $G $1 $2); d="$d:$i"; echo "train $G $1 s$2  $i"; done
 echo "eval  $G wave2  $(evaluate $G "own_unlabelled_s1 own_unlabelled_s2 gold_filtered_s1 gold_filtered_s2" wave2 $d)"
 d=""; for a in "method 1" "method 2" "method_lenmatch 1"; do set -- $a; i=$(train $G $1 $2); d="$d:$i"; echo "train $G $1 s$2  $i"; done
 echo "eval  $G wave3  $(evaluate $G "method_s1 method_s2 method_lenmatch_s1" wave3 $d)"
-echo "submitted: 1 prepare, 14 trainings, 4 evaluations. Watch: squeue -u $USER"
+fi
+echo "submitted for: $STUDENTS. Watch: squeue -u $USER"

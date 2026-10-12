@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-# Fir, run ONCE on a LOGIN node (needs internet), AFTER fir_labelling/setup_fir.sh has been run.
+# Any Alliance cluster (Fir, Nibi, ...), run ONCE on a LOGIN node (needs internet).
+# STUDENTS="<space-separated>" limits setup to those students (default: all three); each cluster sets up only its own.
 # Builds the training environment from PyPI with uv, unpacks the core-24 training/test files (shipped in
 # fir_runs/transfer/), and downloads Mistral-Nemo-Base-2407 and gemma-3-12b-pt. Both are GATED on Hugging Face:
-# run `hf auth login` first, with an account that has accepted both licences.
+# log in first (`hf auth login`) with an account that has accepted both licences.
 set -euo pipefail
 H=$(cd "$(dirname "$0")" && pwd)
 [ "$(dirname "$H")" = "$HOME/multilingual_icm/ICM_work_" ] || { echo "repo must be at ~/multilingual_icm/ICM_work_"; exit 1; }
 F=$HOME/multilingual_icm/data/findings; S=/scratch/$USER/multilingual-icm
 module load python/3.11 cuda arrow
 VV=${PROJECT:-$HOME}/venvs/multilingual-icm; VT=${PROJECT:-$HOME}/venvs/sm-icm
-[ -x $VV/bin/hf ] || { echo "run fir_labelling/setup_fir.sh first"; exit 1; }
+STUDENTS="${STUDENTS:-Qwen3-14B-Base Mistral-Nemo-Base-2407 gemma-3-12b-pt-text}"; echo "students on this cluster: $STUDENTS"
+if [ ! -x $VV/bin/python ]; then   # the vLLM environment (evaluation), same versions as Rorqual
+    python3.11 -m venv $VV && $VV/bin/pip install -q uv
+    $VV/bin/uv pip install --python $VV/bin/python vllm==0.25.1 datasets==5.0.0 rich==15.0.0
+fi
 export HF_HOME=/scratch/$USER/cache/hf
 $VV/bin/hf auth whoami >/dev/null 2>&1 || { echo "NOT LOGGED IN to Hugging Face. Run:  HF_HOME=/scratch/$USER/cache/hf $VV/bin/hf auth login   (token from huggingface.co/settings/tokens)"; exit 1; }
 mkdir -p $F/jobs $F/results $F/logs $HOME/multilingual_icm/data/ICM_work_/runs /scratch/$USER/cache/{vllm,triton,xdg,hf} $S/assets/models
@@ -22,15 +27,14 @@ fi
 $VT/bin/python -c "import importlib.metadata as m; print({p: m.version(p) for p in ('torch','transformers','peft','accelerate')})"
 # 2. training + test files
 T=/scratch/$USER/fir_runs; mkdir -p $T
-cat $H/transfer/runs_core24.tar.zst.part* > $T/runs_core24.tar.zst; cp $H/transfer/*.sha256 $T/   # model lists cover weights, configs and tokenizer only (not README/licence files)
+cat $H/transfer/runs_core24.tar.zst.part* > $T/runs_core24.tar.zst; cp $H/transfer/*.sha256 $T/
 ( cd $T && sha256sum -c transfer.sha256 )
 zstd -dc $T/runs_core24.tar.zst | tar -C $F -xf -
 ( cd $F/runs_core24 && sha256sum -c --quiet $T/runs_core24.sha256 ) && echo "training/test files: 7 verified"
-# 3. models (verified against Rorqual's checksums by the prepare job)
-# pinned to the exact revisions Rorqual downloaded (read from its download cache), so the files match byte for byte
-for spec in "mistralai/Mistral-Nemo-Base-2407 a4477a2f977929a969745b69bbd62e03043551a5" \
-            "google/gemma-3-12b-pt 295efb63d01a7017928f273a94ebb86105c9526f"; do
-    set -- $spec
-    HF_HOME=/scratch/$USER/cache/hf $VV/bin/hf download $1 --revision $2 --local-dir $S/assets/models/${1#*/}
+# 3. models (checked against Rorqual's checksums by the prepare job)
+for st in $STUDENTS; do
+    case $st in Qwen3-14B-Base) m=Qwen/Qwen3-14B-Base;; Mistral-Nemo-Base-2407) m=mistralai/Mistral-Nemo-Base-2407;;
+                gemma-3-12b-pt-text) m=google/gemma-3-12b-pt;; *) echo "unknown student $st"; exit 1;; esac
+    [ -f $S/assets/models/${m#*/}/config.json ] || $VV/bin/hf download $m --local-dir $S/assets/models/${m#*/}
 done
-echo "setup done; next: bash $H/submit_runs.sh (dry run)"
+echo "setup done; next: STUDENTS=\"$STUDENTS\" bash $H/submit_runs.sh (dry run)"
